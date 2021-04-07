@@ -78,23 +78,20 @@ public class Client {
   boolean printSplash = true;
   //intial commit
 
-  Client() {
+  Client(String userid, String hostid, int portno) {
+      
+      this.user = userid;
+      this.host = hostid;
+      this.port = portno;
   }
 
   public static void main(String[] args) throws IOException {
-    String user = args[0];
-    String host = args[1];
-    int port = Integer.parseInt(args[2]);
-    Client client = new Client();
-    client.set(user, host, port);
+   
+    Client client = new Client("parma", "localhost", 8888);
     client.run();
+    
   }
 
-  public void set(String user, String host, int port) {
-    this.user = user;
-    this.host = host;
-    this.port = port;
-  }
 
   // Run the client
   @SuppressFBWarnings(
