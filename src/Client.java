@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 import sep.tinee.net.message.Bye;
 import sep.tinee.net.message.Push;
@@ -76,7 +77,7 @@ public class Client {
   int port;
 
   boolean printSplash = true;
-  //intial commit
+  
 
   Client(String userid, String hostid, int portno) {
       
@@ -86,9 +87,22 @@ public class Client {
   }
 
   public static void main(String[] args) throws IOException {
-   
-    Client client = new Client("parma", "localhost", 8888);
-    client.run();
+      
+      Scanner userDetails;
+      userDetails = new Scanner(System.in);
+      
+      System.out.println("\nPlease enter UserId");
+      String userid = userDetails.next();
+      
+      System.out.println("\nPlease enter HostId");
+      String hostid = userDetails.next();
+      
+      System.out.println("\nPlease enter PortNo");
+      int portno = userDetails.nextInt();
+           
+
+      Client client = new Client(userid, hostid, portno);
+      client.run();
     
   }
 
@@ -105,19 +119,23 @@ public class Client {
       reader = new BufferedReader(new InputStreamReader(System.in));
 
       if (this.user.isEmpty() || this.host.isEmpty()) {
-        System.err.println("User/host has not been set.");
-        System.exit(1);
+         System.err.println("User/host has not been set.");
+        // System.exit(1);                                  
       }
-      helper = new CLFormatter(this.host, this.port);
+      
+         helper = new CLFormatter(this.host, this.port);
 
-      if (this.printSplash = true);
-      {
-        System.out.print(helper.formatSplash(this.user));
+      if (this.printSplash = true);{                             //here we can seperate ; and adding the statment in loop
+         System.out.print(helper.formatSplash(this.user));
       }
-      loop(helper, reader);
-    } catch (Exception ex) {
+        loop(helper, reader);
+    } 
+    
+    catch (Exception ex) {
       throw new RuntimeException(ex);
-    } finally {
+    } 
+    
+    finally {
       reader.close();
       if (helper.chan.isOpen()) {
         // If the channel is open, send Bye and close
@@ -139,7 +157,8 @@ public class Client {
     List<String> draftLines = new LinkedList<>();
 
     // The loop
-    for (boolean done = false; !done;) {
+   for (boolean done = false; !done;)
+    {
 
       // Print user options
       if (state.equals("Main")) {
