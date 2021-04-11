@@ -76,7 +76,7 @@ public class Client {
   String host;
   int port;
 
-  boolean printSplash = true;
+ boolean printSplash = true;
   
 
   Client(String userid, String hostid, int portno) {
@@ -107,6 +107,7 @@ public class Client {
   }
 
 
+  
   // Run the client
   @SuppressFBWarnings(
       value = "DM_DEFAULT_ENCODING",
@@ -120,14 +121,14 @@ public class Client {
 
       if (this.user.isEmpty() || this.host.isEmpty()) {
          System.err.println("User/host has not been set.");
-        // System.exit(1);                                  
+         System.exit(1);                                  
       }
       
          helper = new CLFormatter(this.host, this.port);
 
-      if (this.printSplash = true);{                             //here we can seperate ; and adding the statment in loop
+      if (printSplash){                             
          System.out.print(helper.formatSplash(this.user));
-      }
+     }
         loop(helper, reader);
     } 
     
@@ -144,6 +145,8 @@ public class Client {
       }
     }
   }
+  
+  
 
 // Main loop: print user options, read user input and process
   void loop(CLFormatter helper, BufferedReader reader) throws IOException,
