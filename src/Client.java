@@ -121,7 +121,7 @@ public class Client {
 
       if (this.user.isEmpty() || this.host.isEmpty()) {
          System.err.println("User/host has not been set.");
-         System.exit(1);                                  
+         run();                                  
       }
       
          helper = new CLFormatter(this.host, this.port);
@@ -193,7 +193,7 @@ public class Client {
           // Switch to "Drafting" state and start a new "draft"
           state = "Drafting";
           draftTag = rawArgs[0];
-        } else if ("read".startsWith(cmd)) {
+        } else if ("read".startsWith(cmd)){
           // Read tines on server
           helper.chan.send(new ReadRequest(rawArgs[0]));
           ReadReply rep = (ReadReply) helper.chan.receive();
