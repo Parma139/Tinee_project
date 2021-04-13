@@ -1,5 +1,6 @@
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -37,9 +38,7 @@ public class CLFormatter {
   /* Following are the auxiliary methods for formatting the UI text */
 
   static String formatSplash(String user) {
-    return "\nHello " + user + "!\n" 
-        + "Note:  Commands can be abbreviated to any prefix, "
-        + "e.g., read [mytag] => re [mytag]\n";
+    return strings.getString("formatsplash_message");
   }
 
   static String formatMainMenuPrompt() {
@@ -86,4 +85,12 @@ public class CLFormatter {
     b.append("\n");
     return b.toString();
   }
+  
+  //Message format class and class use message formatting which use message
+    //Object....... this is the array of the object and in this numebr need to pass in order
+    public void println(String message, Object...params){
+        
+        System.out.println(MessageFormat.format(message,params));
+    
+    }
 }
