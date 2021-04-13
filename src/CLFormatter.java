@@ -2,6 +2,8 @@
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import sep.tinee.net.channel.ClientChannel;
 import sep.tinee.net.message.Message;
 
@@ -10,10 +12,15 @@ import sep.tinee.net.message.Message;
  * for formatting Command Line messages.
  */
 public class CLFormatter {
+    
+    private final String RESOURCE_PATH = "resources/MessageBundle";
+    private static ResourceBundle strings;
 
   static ClientChannel chan;  // Client-side channel for talking to a Tinee server
 
   CLFormatter(String host, int port) {
+      
+    strings = ResourceBundle.getBundle(RESOURCE_PATH, new Locale("fr", "FR"));
     this.chan = new ClientChannel(host, port);
   }
 
@@ -30,17 +37,17 @@ public class CLFormatter {
   /* Following are the auxiliary methods for formatting the UI text */
 
   static String formatSplash(String user) {
-    return "\nHello " + user + "!\n"
+    return "\nHello " + user + "!\n" 
         + "Note:  Commands can be abbreviated to any prefix, "
         + "e.g., read [mytag] => re [mytag]\n";
   }
 
   static String formatMainMenuPrompt() {
-    return "\n[Main] Enter command: "
-        + "read [mytag], "
-        + "manage [mytag], "
-        + "exit"
-        + "\n> ";
+      
+      
+    return strings.getString("main_menu_prompt_message");
+            
+            //"\n[Main] Enter command: read [mytag], manage [mytag], exit\n> ";
   }
 
   static String formatDraftingMenuPrompt(String tag, List<String> lines) {
