@@ -79,29 +79,16 @@ public class Client {
  boolean printSplash = true;
   
 
-  Client(String userid, String hostid, int portno) {
+  Client() {
       
-      this.user = userid;
-      this.host = hostid;
-      this.port = portno;
+      this.user = "Parma";
+//      this.host = "localhost";
+      this.port = 8888;
   }
 
   public static void main(String[] args) throws IOException {
-      
-      Scanner userDetails;
-      userDetails = new Scanner(System.in);
-      
-      System.out.println("\nPlease enter UserId");
-      String userid = userDetails.next();
-      
-      System.out.println("\nPlease enter HostId");
-      String hostid = userDetails.next();
-      
-      System.out.println("\nPlease enter PortNo");
-      int portno = userDetails.nextInt();
-           
-
-      Client client = new Client(userid, hostid, portno);
+     
+      Client client = new Client();
       client.run();
     
   }
@@ -116,24 +103,39 @@ public class Client {
 
     BufferedReader reader = null;
     CLFormatter helper = null;
+      
     try {
-      reader = new BufferedReader(new InputStreamReader(System.in));
-
-      if (this.user.isEmpty() || this.host.isEmpty()) {
-         System.err.println("User/host has not been set.");
-         run();                                  
+    reader = new BufferedReader(new InputStreamReader(System.in));
+       
+      if (user == null || host == null) {
+         
+         System.err.println("User/host has not been set. \n"); 
+        
+         Scanner userDetails = new Scanner (System.in);
+         System.err.println("Please enter User/host name:"); 
+         String userInput = userDetails.next();
+           
+         if (user == null){
+         this.user = userInput; 
+         }
+         else {
+         this.host = userInput;
+         }
+         
+      run();
+      
       }
       
-         helper = new CLFormatter(this.host, this.port);
-
-      if (printSplash){                             
-         System.out.print(helper.formatSplash(this.user));
-     }
+      else{
+        helper = new CLFormatter(this.host, this.port);                     
+        System.out.print(helper.formatSplash(this.user));
         loop(helper, reader);
-    } 
+      }
+     
+    }
     
     catch (Exception ex) {
-      throw new RuntimeException(ex);
+         System.err.println("User/host has not been set.");
     } 
     
     finally {
