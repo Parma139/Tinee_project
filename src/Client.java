@@ -75,14 +75,11 @@ public class Client {
   String user;
   String host;
   int port;
-
- boolean printSplash = true;
   
-
   Client() {
       
       this.user = "Parma";
-//      this.host = "localhost";
+      this.host = "localhost";
       this.port = 8888;
   }
 

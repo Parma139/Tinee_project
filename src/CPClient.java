@@ -29,6 +29,7 @@ public class CPClient {
     String user;
     String host;
     int port;
+    Scanner userInput = new Scanner (System.in);
     
     public CPClient (){
       this.user = "parma";
@@ -41,14 +42,7 @@ public class CPClient {
   
       CPClient client = new CPClient();
       client.run();    
-             
-//     // access the read functionality
-//       CommandController controller = new CommandController();
-//       Read read = new Read();
-//       ReadSetup menusetup = new ReadSetup(read);
-//       controller.setCommand(menusetup);
-//       controller.userInput();
-//    
+                
     }
     
     
@@ -69,17 +63,14 @@ public class CPClient {
        
       if (user == null || host == null) {
          
-         System.err.println("User/host has not been set. \n"); 
-        
-         Scanner userDetails = new Scanner (System.in);
-         System.err.println("Please enter User/host name:"); 
-         String userInput = userDetails.next();
-           
+         System.err.println("User/host has not been set. \n\nPlease enter User/host name: "); 
+         String userDetails = userInput.next();
+          
          if (user == null){
-         this.user = userInput; 
+         this.user = userDetails; 
          }
          else {
-         this.host = userInput;
+         this.host = userDetails;
          }
          
       run();
@@ -94,7 +85,7 @@ public class CPClient {
      
     } 
     
-    catch (Exception ex) {
+    catch (IOException | ClassNotFoundException ex) {
       throw new RuntimeException(ex);
     } 
     
@@ -135,41 +126,56 @@ public class CPClient {
 
       // Read a line of user input
       String raw = reader.readLine();
+      
+      
       if (raw == null) {
+        System.err.println("I am in raw = null");
         throw new IOException("Input stream closed while reading.");
       }
       // Trim leading/trailing white space, and split words according to spaces
       List<String> split = Arrays.stream(raw.trim().split("\\ "))
           .map(x -> x.trim()).collect(Collectors.toList());
       String cmd = split.remove(0);  // First word is the command keyword
+     
       String[] rawArgs = split.toArray(new String[split.size()]);
       // Remainder, if any, are arguments
-
+    
+     
+        
+      if (cmd.isEmpty()){
+      System.err.println("Type the input");
+      continue;
+      
+      }
       // Process user input
       if ("exit".startsWith(cmd)) {
         // exit command applies in either state
         done = true;
+        continue;
       } // "Main" state commands
       else if (state.equals("Main")) {
         if ("manage".startsWith(cmd)) {
           // Switch to "Drafting" state and start a new "draft"
           state = "Drafting";
           draftTag = rawArgs[0];
-        } else if ("read".startsWith(cmd)){
+        } 
+        
+        if ("read".startsWith(cmd)){  
           // Read tines on server
-          helper.chan.send(new ReadRequest(rawArgs[0]));
-          ReadReply rep = (ReadReply) helper.chan.receive();
-          System.out.print(
-              helper.formatRead(rawArgs[0], rep.users, rep.lines));
-        } else {
-          System.out.println("Could not parse command/args.");
+            
+         CommandController controller = new CommandController();
+         Read read = new Read();
+         ReadSetup menusetup = new ReadSetup(read, rawArgs[0]);
+         controller.setCommand(menusetup);
+         controller.userInput();
         }
+         
       } // "Drafting" state commands
       else if (state.equals("Drafting")) {
         if ("line".startsWith(cmd)) {
           // Add a tine message line
           String line = Arrays.stream(rawArgs).
-              collect(Collectors.joining());
+              collect(Collectors.joining(" "));
           draftLines.add(line);
         } else if ("push".startsWith(cmd)) {
           // Send drafted tines to the server, and go back to "Main" state
