@@ -38,7 +38,8 @@ public class CLFormatter {
   /* Following are the auxiliary methods for formatting the UI text */
 
   static String formatSplash(String user) {
-    return strings.getString("formatsplash_message");
+      
+    return println(strings.getString("formatsplash_message"), user);
   }
 
   static String formatMainMenuPrompt() {
@@ -50,12 +51,9 @@ public class CLFormatter {
   }
 
   static String formatDraftingMenuPrompt(String tag, List<String> lines) {
-    return "\nDrafting: " + formatDrafting(tag, lines)
-        + "\n[Drafting] Enter command: "
-        + "line [mytext], "
-        + "push, "
-        + "exit"
-        + "\n> ";
+    
+      return strings.getString("format_Drafting_MenuPrompt_before_tag")+ formatDrafting(tag, lines) + strings.getString("format_Drafting_MenuPrompt_after_tag");
+      
   }
 
   static String formatDrafting(String tag, List<String> lines) {
@@ -88,9 +86,11 @@ public class CLFormatter {
   
   //Message format class and class use message formatting which use message
     //Object....... this is the array of the object and in this numebr need to pass in order
-    public void println(String message, Object...params){
+    public static String println(String message, Object...params){
         
-        System.out.println(MessageFormat.format(message,params));
+//        System.out.println(MessageFormat.format(message,params));
+        
+        return MessageFormat.format(message,params);
     
     }
 }
