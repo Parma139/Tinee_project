@@ -21,7 +21,7 @@ public class CLFormatter {
 
   CLFormatter(String host, int port) {
       
-    strings = ResourceBundle.getBundle(RESOURCE_PATH, new Locale("fr", "FR"));
+    strings = ResourceBundle.getBundle(RESOURCE_PATH, new Locale("en", "EN"));
     this.chan = new ClientChannel(host, port);
   }
 
