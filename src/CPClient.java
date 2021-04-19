@@ -24,31 +24,30 @@ import sep.tinee.net.message.ReadRequest;
  * @author parma
  */
 public class CPClient {
-    
-    
+
+
     String user;
     String host;
     int port;
-    Scanner userInput = new Scanner (System.in);
     CommandController controller = new CommandController();
-    
+
     public CPClient (){
       this.user = "parma";
       this.host = "localhost";
       this.port = 8888;
-    
+
     }
-     
+
     public static void main (String[] args) throws IOException{
-  
+
       CPClient client = new CPClient();
-      client.run();    
-                
+      client.run();
+
     }
-    
-    
-    
-    
+
+
+
+
     // Run the client
   @SuppressFBWarnings(
       value = "DM_DEFAULT_ENCODING",
@@ -57,39 +56,38 @@ public class CPClient {
 
     BufferedReader reader = null;
     CLFormatter helper = null;
-    
-   
+
+
     try {
       reader = new BufferedReader(new InputStreamReader(System.in));
-       
+
       if (user == null || host == null) {
-         
-         System.err.println("User/host has not been set. \n\nPlease enter User/host name: "); 
-         String userDetails = userInput.next();
-          
+
+         System.err.println("User/host has not been set. \n\nPlease enter User/host name: ");
+         String userDetails = reader.readLine();
          if (user == null){
-         this.user = userDetails; 
+         this.user = userDetails;
          }
          else {
          this.host = userDetails;
          }
-         
+
       run();
-      
+
       }
-      
+
       else{
-        helper = new CLFormatter(this.host, this.port);                     
+        helper = new CLFormatter(this.host, this.port);
         System.out.print(helper.formatSplash(this.user));
         loop(helper, reader);
       }
-     
-    } 
-    
+
+    }
+
     catch (IOException | ClassNotFoundException ex) {
       throw new RuntimeException(ex);
-    } 
-    
+    }
+
     finally {
       reader.close();
       if (helper.chan.isOpen()) {
@@ -99,9 +97,9 @@ public class CPClient {
       }
     }
   }
-  
-  
-  
+
+
+
   // Main loop: print user options, read user input and process
   void loop(CLFormatter helper, BufferedReader reader) throws IOException,
       ClassNotFoundException {
@@ -112,7 +110,7 @@ public class CPClient {
     // Holds the current draft data when in the "Drafting" state
     String draftTag = null;
     List<String> draftLines = new LinkedList<>();
-    
+
 
     // The loop
    for (boolean done = false; !done;)
@@ -128,8 +126,8 @@ public class CPClient {
 
       // Read a line of user input
       String raw = reader.readLine();
-      
-      
+
+
       if (raw == null) {
         throw new IOException("Input stream closed while reading.");
       }
@@ -137,16 +135,16 @@ public class CPClient {
       List<String> split = Arrays.stream(raw.trim().split("\\ "))
           .map(x -> x.trim()).collect(Collectors.toList());
       String cmd = split.remove(0);  // First word is the command keyword
-     
+
       String[] rawArgs = split.toArray(new String[split.size()]);
       // Remainder, if any, are arguments
-    
-     
-        
+
+
+
       if (cmd.isEmpty()){
       System.err.println("Type the input");
       continue;
-      
+
       }
       // Process user input
       if ("exit".startsWith(cmd)) {
@@ -159,28 +157,28 @@ public class CPClient {
           // Switch to "Drafting" state and start a new "draft"
           state = "Drafting";
           draftTag = rawArgs[0];
-        } 
-        
-        if ("read".startsWith(cmd)){  
+        }
+
+        if ("read".startsWith(cmd)){
           // Read tines on server
          Read read = new Read();
          ReadSetup menusetup = new ReadSetup(read, rawArgs[0]);
          controller.setCommand(menusetup);
          controller.userInput();
         }
-         
+
       } // "Drafting" state commands
       else if (state.equals("Drafting")) {
         if ("line".startsWith(cmd)) {
           // Add a tine message line
-      
+
          Line line = new Line();
          LineSetup linesetup = new LineSetup(line, rawArgs);
          controller.setCommand(linesetup);
          controller.userInput();
          String lines = line.linesetup(rawArgs);
          draftLines.add(lines);
-    
+
         } else if ("push".startsWith(cmd)) {
           // Send drafted tines to the server, and go back to "Main" state
           helper.chan.send(new Push(user, draftTag, draftLines));
@@ -194,5 +192,5 @@ public class CPClient {
       }
     }
     return;
-  } 
+  }
 }
