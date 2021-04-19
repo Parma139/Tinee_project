@@ -30,6 +30,8 @@ public class CPClient {
     String host;
     int port;
     Scanner userInput = new Scanner (System.in);
+    CommandController controller = new CommandController();
+//    public List<String> draftLines = new LinkedList<>();
     
     public CPClient (){
       this.user = "parma";
@@ -110,7 +112,7 @@ public class CPClient {
 
     // Holds the current draft data when in the "Drafting" state
     String draftTag = null;
-    List<String> draftLines = new LinkedList<>();
+//    List<String> draftLines = new LinkedList<>();
 
     // The loop
    for (boolean done = false; !done;)
@@ -120,8 +122,8 @@ public class CPClient {
       if (state.equals("Main")) {
         System.out.print(helper.formatMainMenuPrompt());
       } else {  // state = "Drafting"
-        System.out.print(helper.
-            formatDraftingMenuPrompt(draftTag, draftLines));
+      //  System.out.print(helper.
+          //  formatDraftingMenuPrompt(draftTag, draftLines));
       }
 
       // Read a line of user input
@@ -163,7 +165,7 @@ public class CPClient {
         if ("read".startsWith(cmd)){  
           // Read tines on server
             
-         CommandController controller = new CommandController();
+         
          Read read = new Read();
          ReadSetup menusetup = new ReadSetup(read, rawArgs[0]);
          controller.setCommand(menusetup);
@@ -174,12 +176,27 @@ public class CPClient {
       else if (state.equals("Drafting")) {
         if ("line".startsWith(cmd)) {
           // Add a tine message line
-          String line = Arrays.stream(rawArgs).
-              collect(Collectors.joining(" "));
-          draftLines.add(line);
+          
+         Drafting drafting = new Drafting();
+         LineSetup linesetup = new LineSetup(drafting, rawArgs);
+         controller.setCommand(linesetup);
+         controller.userInput();
+//         String userinput =drafting.linesetup(rawArgs);
+//         draftLines.add(userinput);
+         
+//          String line = Arrays.stream(rawArgs).
+//          collect(Collectors.joining(" "));
+//          draftLines.add(line);
+
         } else if ("push".startsWith(cmd)) {
           // Send drafted tines to the server, and go back to "Main" state
-          helper.chan.send(new Push(user, draftTag, draftLines));
+//          helper.chan.send(new Push(user, draftTag, draftLines));
+
+         Drafting drafting = new Drafting();
+         PushSetup pushsetup = new PushSetup(drafting, draftTag);
+         controller.setCommand(pushsetup);
+         controller.userInput();
+         System.out.println("I am in push in CPCLIENT"+user);
           state = "Main";
           draftTag = null;
         } else {
