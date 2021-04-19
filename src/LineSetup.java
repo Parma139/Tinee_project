@@ -1,8 +1,3 @@
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -13,24 +8,23 @@ import java.util.logging.Logger;
  *
  * @author parma
  */
-public class ReadSetup implements Command{
+public class LineSetup implements Command{
     
-    Read read;
-    String argstmp;
-    public ReadSetup (Read read, String args){
+    Line line;
+    String[] argstmp;
+    public LineSetup (Line line, String[] args){
         
-        this.read = read;
+        this.line = line;
         this.argstmp = args;
     }
 
     @Override
     public void execute() {
         try {
-            read.readsetup(argstmp);
+            line.linesetup(argstmp);
         } catch (Exception ex) {
-            System.out.println("I am in readsetups class");
+            System.out.println("I am in linesetup");
         } 
 
     }
-    
 }

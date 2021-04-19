@@ -30,6 +30,7 @@ public class CPClient {
     String host;
     int port;
     Scanner userInput = new Scanner (System.in);
+    CommandController controller = new CommandController();
     
     public CPClient (){
       this.user = "parma";
@@ -111,6 +112,7 @@ public class CPClient {
     // Holds the current draft data when in the "Drafting" state
     String draftTag = null;
     List<String> draftLines = new LinkedList<>();
+    
 
     // The loop
    for (boolean done = false; !done;)
@@ -129,7 +131,6 @@ public class CPClient {
       
       
       if (raw == null) {
-        System.err.println("I am in raw = null");
         throw new IOException("Input stream closed while reading.");
       }
       // Trim leading/trailing white space, and split words according to spaces
@@ -162,8 +163,6 @@ public class CPClient {
         
         if ("read".startsWith(cmd)){  
           // Read tines on server
-            
-         CommandController controller = new CommandController();
          Read read = new Read();
          ReadSetup menusetup = new ReadSetup(read, rawArgs[0]);
          controller.setCommand(menusetup);
@@ -174,9 +173,14 @@ public class CPClient {
       else if (state.equals("Drafting")) {
         if ("line".startsWith(cmd)) {
           // Add a tine message line
-          String line = Arrays.stream(rawArgs).
-              collect(Collectors.joining(" "));
-          draftLines.add(line);
+      
+         Line line = new Line();
+         LineSetup linesetup = new LineSetup(line, rawArgs);
+         controller.setCommand(linesetup);
+         controller.userInput();
+         String lines = line.linesetup(rawArgs);
+         draftLines.add(lines);
+    
         } else if ("push".startsWith(cmd)) {
           // Send drafted tines to the server, and go back to "Main" state
           helper.chan.send(new Push(user, draftTag, draftLines));

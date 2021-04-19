@@ -205,9 +205,10 @@ public class Client {
       else if (state.equals("Drafting")) {
         if ("line".startsWith(cmd)) {
           // Add a tine message line
-          String line = Arrays.stream(rawArgs).
-              collect(Collectors.joining());
+          String line = Arrays.stream(rawArgs).collect(Collectors.joining());
+          System.out.println("Draftline before.add line: "+ draftLines);
           draftLines.add(line);
+          System.out.println("Draftline after.add line: "+ draftLines);
         } else if ("push".startsWith(cmd)) {
           // Send drafted tines to the server, and go back to "Main" state
           helper.chan.send(new Push(user, draftTag, draftLines));

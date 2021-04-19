@@ -20,17 +20,9 @@ public class Read {
           
 
           CLFormatter helper = null;
-//          String rawArgs[] = {"Parma"};
           helper.chan.send(new ReadRequest(arg));
           ReadReply rep = (ReadReply) helper.chan.receive();
           System.out.print(
-              helper.formatRead(arg, rep.users, rep.lines));
-    }
-      
-//      void readsetup(){
-//          
-//          System.out.println("I am in read CP class");
-//    }
-    
-    
+          helper.formatRead(arg, rep.users, rep.lines));
+    }   
 }
