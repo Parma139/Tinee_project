@@ -17,7 +17,6 @@ import sep.tinee.net.message.ReadRequest;
 public class Read {
     
       void readsetup(String arg) throws IOException, ClassNotFoundException{
-          
 
           CLFormatter helper = null;
           helper.chan.send(new ReadRequest(arg));

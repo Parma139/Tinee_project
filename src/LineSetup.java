@@ -10,18 +10,18 @@
  */
 public class LineSetup implements Command{
     
-    Line line;
+    Drafting drafting;
     String[] argstmp;
-    public LineSetup (Line line, String[] args){
+    public LineSetup (Drafting draft, String[] args){
         
-        this.line = line;
+        this.drafting = draft;
         this.argstmp = args;
     }
 
     @Override
     public void execute() {
         try {
-            line.linesetup(argstmp);
+            drafting.linesetup(argstmp);
         } catch (Exception ex) {
             System.out.println("I am in linesetup");
         } 
