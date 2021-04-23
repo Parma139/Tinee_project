@@ -54,15 +54,10 @@ public class Drafting {
    void undo (){
        
        
-       if(draftvar.draftLines != null){
-//           
-//                System.out.println("I am in undo function");
-//                System.out.println("I can access from drafting the draftline value: " + draftvar.draftLines.getLast());
-//          
-//             draftvar.draftLines.removeLast();
-          } 
-   
-           
+        Iterator<String> addedLine = draftvar.draftLines.iterator();
+              if(addedLine.hasNext()){
+              draftvar.draftLines.removeLast();
+              }  
        
    }
 }
