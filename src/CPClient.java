@@ -111,7 +111,8 @@ public class CPClient {
     String state = "Main";  // Initial state
 
     // Holds the current draft data when in the "Drafting" state
-//    String draftTag = null;
+    String draftTag = null;
+    
     
 
 
@@ -120,22 +121,19 @@ public class CPClient {
     {
 
       // Print user options
+      CommandCode code = new CommandCode();
       if (state.equals("Main")) {
-        System.out.print(helper.formatMainMenuPrompt());
+        code.printMainOptions();
       } else {  // state = "Drafting"
-        System.out.print(helper.
-            formatDraftingMenuPrompt(draftTag, draftLines));
-             System.out.println("Draftlineline:  else  "+ draftLines);
-//              System.out.println("Draftlineline:  else after accessing last element  "+ draftLines.getLast());
+        code.printDraftingOptions();
       }
 
       // Read a line of user input
       String raw = reader.readLine();
-
-
       if (raw == null) {
         throw new IOException("Input stream closed while reading.");
       }
+      
       // Trim leading/trailing white space, and split words according to spaces
       List<String> split = Arrays.stream(raw.trim().split("\\ "))
           .map(x -> x.trim()).collect(Collectors.toList());
@@ -143,7 +141,6 @@ public class CPClient {
 
       String[] rawArgs = split.toArray(new String[split.size()]);
       // Remainder, if any, are arguments
-
 
 
       if (cmd.isEmpty()){
@@ -161,6 +158,7 @@ public class CPClient {
         if ("manage".startsWith(cmd)) {
           // Switch to "Drafting" state and start a new "draft"
           state = "Drafting";
+         // draftTag = code.rawInfo;
           draftTag = rawArgs[0];
         }
 
@@ -176,11 +174,11 @@ public class CPClient {
       else if (state.equals("Drafting")) {
         if ("line".startsWith(cmd)) {
           // Add a tine message line
-//
-         Drafting drafting = new Drafting();
-         LineSetup linesetup = new LineSetup(drafting, rawArgs);
-         controller.setCommand(linesetup);
-         controller.userInput();
+////
+//         Drafting drafting = new Drafting();
+//         LineSetup linesetup = new LineSetup(drafting, rawArgs);
+//         controller.setCommand(linesetup);
+//         controller.userInput();
          //System.out.println("cpclient in line options "+ draftLines.getLast());
 //         String lines = drafting.linesetup(rawArgs); //i edited
         //  System.out.println("I am in CPClient class: " + draftLines.get(0));
