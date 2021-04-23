@@ -1,6 +1,7 @@
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,4 +51,18 @@ public class Drafting {
           System.out.println("Draftlineline: in push options "+ draftvar.draftLines);
    }
     
+   void undo (){
+       
+       
+       if(draftvar.draftLines != null){
+//           
+//                System.out.println("I am in undo function");
+//                System.out.println("I can access from drafting the draftline value: " + draftvar.draftLines.getLast());
+//          
+//             draftvar.draftLines.removeLast();
+          } 
+   
+           
+       
+   }
 }

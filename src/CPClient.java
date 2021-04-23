@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -30,7 +31,6 @@ public class CPClient {
     String host;
     int port;
     CommandController controller = new CommandController();
-   // public List<String> draftLines = new LinkedList<>();
     public LinkedList<String> draftLines = new LinkedList<>();
     public String draftTag = null;
 
@@ -111,7 +111,7 @@ public class CPClient {
     String state = "Main";  // Initial state
 
     // Holds the current draft data when in the "Drafting" state
-//    String draftTag = null;
+    //String draftTag = null; declared in outside of the method
     
 
 
@@ -125,9 +125,8 @@ public class CPClient {
       } else {  // state = "Drafting"
         System.out.print(helper.
             formatDraftingMenuPrompt(draftTag, draftLines));
-             System.out.println("Draftlineline:  else  "+ draftLines);
-//              System.out.println("Draftlineline:  else after accessing last element  "+ draftLines.getLast());
-      }
+//             System.out.println("Draftlineline:  else  "+ draftLines);
+        }
 
       // Read a line of user input
       String raw = reader.readLine();
@@ -177,33 +176,54 @@ public class CPClient {
         if ("line".startsWith(cmd)) {
           // Add a tine message line
 //
-         Drafting drafting = new Drafting();
-         LineSetup linesetup = new LineSetup(drafting, rawArgs);
-         controller.setCommand(linesetup);
-         controller.userInput();
+//         Drafting drafting = new Drafting();
+//         LineSetup linesetup = new LineSetup(drafting, rawArgs);
+//         controller.setCommand(linesetup);
+//         controller.userInput();
          //System.out.println("cpclient in line options "+ draftLines.getLast());
-//         String lines = drafting.linesetup(rawArgs); //i edited
-        //  System.out.println("I am in CPClient class: " + draftLines.get(0));
+         //String lines = drafting.linesetup(rawArgs); //i edited
+         //System.out.println("I am in CPClient class: " + draftLines.get(0));
         
-        // line.CPdraftLines = draftLines; i edited
-        // main code
-//          String line = Arrays.stream(rawArgs).collect(Collectors.joining());
-//          draftLines.add(lines);
-//          System.out.println("Draftlineline: in line options "+ draftLines);
+         // line.CPdraftLines = draftLines; i edited
+         // main code
+          String line = Arrays.stream(rawArgs).
+              collect(Collectors.joining(" "));
+          draftLines.add(line);
         // main code
         } else if ("push".startsWith(cmd)) {
-          // Send drafted tines to the server, and go back to "Main" state
-//          helper.chan.send(new Push(user, draftTag, draftLines));
-//          System.out.println("Draftlineline: in oush options "+ draftLines);
-         System.out.println("I am in CPClient in push "+ draftLines);
-         Drafting drafting = new Drafting();
-         PushSetup pushSetup = new PushSetup(drafting);
-         controller.setCommand(pushSetup);
-         controller.userInput();
-            
+          //Send drafted tines to the server, and go back to "Main" state
+          helper.chan.send(new Push(user, draftTag, draftLines));
+//         System.out.println("Draftlineline: in oush options "+ draftLines);
+//         System.out.println("I am in CPClient in push "+ draftLines);
+//         Drafting drafting = new Drafting();
+//         PushSetup pushSetup = new PushSetup(drafting);
+//         controller.setCommand(pushSetup);
+//         controller.userInput();
+//            
           state = "Main";
           draftTag = null;
-        } else {
+        } 
+        
+        else if ("undo".startsWith(cmd)) {
+          
+        Iterator<String> addedLine = draftLines.iterator();
+              if(addedLine.hasNext()){
+              draftLines.removeLast();
+              }  
+        
+                   
+                   
+                   
+                   
+
+//           Drafting drafting = new Drafting();
+//           UndoSetup undosetup = new UndoSetup(drafting);
+//            controller.setCommand(undosetup);
+//            controller.userInput();
+        } 
+        
+        
+        else {
           System.out.println("Could not parse command/args.");
         }
       } else {
