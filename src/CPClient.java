@@ -32,6 +32,7 @@ public class CPClient {
     int port;
     CommandController controller = new CommandController();
     public LinkedList<String> draftLines = new LinkedList<>();
+     public LinkedList<String> ticketStateTag = new LinkedList<>();
     public String draftTag = null;
 
     public CPClient (){
@@ -109,6 +110,7 @@ public class CPClient {
 
     // The app is in one of two states: "Main" or "Drafting"
     String state = "Main";  // Initial state
+    String ticketState = "open"; //Ticket state use to check ticket status
 
     // Holds the current draft data when in the "Drafting" state
     //String draftTag = null; declared in outside of the method
@@ -157,18 +159,26 @@ public class CPClient {
         continue;
       } // "Main" state commands
       else if (state.equals("Main")) {
-        if ("manage".startsWith(cmd)) {
-          // Switch to "Drafting" state and start a new "draft"
+          
+          draftTag = rawArgs[0];
+          boolean ticket = ticketStateTag.contains(draftTag);
+          
+        if ("manage".startsWith(cmd) && ticket == false ) {
+          // Switch to "Drafting" state and start a new "draft
+          
           state = "Drafting";
           draftTag = rawArgs[0];
+        }
+        else {
+            System.out.println("\n >>>>>>>>>>> Ticket has been closed >>>>>>>>>>>");
         }
 
         if ("read".startsWith(cmd)){
           // Read tines on server
-         Read read = new Read();
-         ReadSetup menusetup = new ReadSetup(read, rawArgs[0]);
-         controller.setCommand(menusetup);
-         controller.userInput();
+            Read read = new Read();
+            ReadSetup menusetup = new ReadSetup(read, rawArgs[0]);
+            controller.setCommand(menusetup);
+            controller.userInput();
         }
 
       } // "Drafting" state commands
@@ -190,9 +200,11 @@ public class CPClient {
               collect(Collectors.joining(" "));
           draftLines.add(line);
         // main code
-        } else if ("push".startsWith(cmd)) {
+        }
+        
+        else if ("push".startsWith(cmd)) {
           //Send drafted tines to the server, and go back to "Main" state
-          helper.chan.send(new Push(user, draftTag, draftLines));
+           helper.chan.send(new Push(user, draftTag, draftLines));
 //         System.out.println("Draftlineline: in oush options "+ draftLines);
 //         System.out.println("I am in CPClient in push "+ draftLines);
 //         Drafting drafting = new Drafting();
@@ -206,14 +218,11 @@ public class CPClient {
         
         else if ("undo".startsWith(cmd)) {
           
-        Iterator<String> addedLine = draftLines.iterator();
+            Iterator<String> addedLine = draftLines.iterator();
               if(addedLine.hasNext()){
               draftLines.removeLast();
               }  
-        
-                   
-                   
-                   
+                        
                    
 //
 //           Drafting drafting = new Drafting();
@@ -223,6 +232,19 @@ public class CPClient {
         } 
         
         
+        else if ("close".startsWith(cmd) && draftTag.equals(user)) {
+            
+            
+          
+            helper.chan.send(new Push(user, draftTag, draftLines));
+        
+        
+            ticketStateTag.add(draftTag);
+            state = "Main";
+            draftTag = null;
+        
+              }        
+              
         else {
           System.out.println("Could not parse command/args.");
         }
