@@ -15,18 +15,18 @@ import java.util.logging.Logger;
  */
 public class ReadSetup implements Command{
     
-    Read read;
+    Main main;
     String argstmp;
-    public ReadSetup (Read read, String args){
+    public ReadSetup (Main main, String args){
         
-        this.read = read;
+        this.main = main;
         this.argstmp = args;
     }
 
     @Override
     public void execute() {
         try {
-            read.readsetup(argstmp);
+            main.readsetup(argstmp);
         } catch (Exception ex) {
             System.out.println("I am in readsetups class");
         } 

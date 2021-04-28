@@ -175,8 +175,8 @@ public class CPClient {
 
         if ("read".startsWith(cmd)){
           // Read tines on server
-            Read read = new Read();
-            ReadSetup menusetup = new ReadSetup(read, rawArgs[0]);
+            Main main = new Main();
+            ReadSetup menusetup = new ReadSetup(main, rawArgs[0]);
             controller.setCommand(menusetup);
             controller.userInput();
         }

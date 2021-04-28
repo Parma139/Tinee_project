@@ -1,5 +1,4 @@
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import sep.tinee.net.message.ReadReply;
 import sep.tinee.net.message.ReadRequest;
@@ -14,14 +13,14 @@ import sep.tinee.net.message.ReadRequest;
  *
  * @author parma
  */
-public class Read {
+public class Main {
     
-      void readsetup(String arg) throws IOException, ClassNotFoundException{
+       void readsetup(String arg) throws IOException, ClassNotFoundException{
 
           CLFormatter helper = null;
           helper.chan.send(new ReadRequest(arg));
           ReadReply rep = (ReadReply) helper.chan.receive();
           System.out.print(
           helper.formatRead(arg, rep.users, rep.lines));
-    }   
+    }  
 }
