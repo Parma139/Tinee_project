@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -13,12 +15,11 @@ import java.util.logging.Logger;
  *
  * @author parma
  */
-public class PushSetup implements Command{
+public class CloseSetup implements Command{
     
-       
     Drafting drafting;
-    
-    public PushSetup (Drafting draft){
+   
+    public CloseSetup (Drafting draft){
         
         this.drafting = draft;
         
@@ -26,15 +27,11 @@ public class PushSetup implements Command{
 
     @Override
     public void execute() {
-        
-           try {
-               drafting.push();
-//               IOException
-           } catch (IOException ex) {
-               System.out.println("I am in push setup");
-           }
-         
 
+        try {
+            drafting.close();
+        } catch (IOException ex) {
+               System.out.println("I am in Close setup");
+            }
     }
-    
 }

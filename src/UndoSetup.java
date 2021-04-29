@@ -12,7 +12,7 @@ public class UndoSetup implements Command{
     
     
     Drafting drafting;
-  //  String[] argstmp;
+  
     public UndoSetup (Drafting draft){
         
         this.drafting = draft;

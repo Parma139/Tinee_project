@@ -19,45 +19,50 @@ import sep.tinee.net.message.Push;
  */
 public class Drafting {
     
-     public LinkedList<String> CPdraftLines = new LinkedList<>();
-     CPClient draftvar = new CPClient();
-     String list;
-//   String linesetup(String[] arg){
-   void linesetup(String[] arg){
+
+    CPClient client; 
+    CLFormatter helper = null;
+     
+    public Drafting(CPClient client){
+        this.client = client;
+    }
     
-//         List<String> CPdraftLines = new LinkedList<>();
+   void linesetup(String[] arg){
 
          String line = Arrays.stream(arg).collect(Collectors.joining(" "));
-//         CPdraftLines.add(line); //i edited
-         draftvar.draftLines.add(line);
-         System.out.println("I am afte add draftline  in line class: and priting using get last " + draftvar.draftLines.getLast());
-         System.out.println("I am afte add draftline  in line class: without get lastt " + draftvar.draftLines);
-//      System.out.println("I am afte add draftline  in line class: without get lastt " + CPdraftLines);
-          list = draftvar.draftLines.getLast();  
-//         return  line;
-
+         client.draftLines.add(line);  
     }
    
    void push () throws IOException{
-        
-          String userID = draftvar.user;
-          String draftTagID = draftvar.draftTag;
-          CLFormatter helper = null;
-//        
-        
-          CPdraftLines.add(list);
-   
-          helper.chan.send(new Push(userID, draftTagID, CPdraftLines));
-          System.out.println("Draftlineline: in push options "+ draftvar.draftLines);
+      
+        helper.chan.send(new Push(client.user, client.draftTag, client.draftLines));
+           changestate();
+          
    }
     
    void undo (){
        
        
-        Iterator<String> addedLine = draftvar.draftLines.iterator();
-              if(addedLine.hasNext()){
-              draftvar.draftLines.removeLast();
+        Iterator<String> addedLine = client.draftLines.iterator();
+            if(addedLine.hasNext()){
+            client.draftLines.removeLast();
+
               }  
-       
+   
    }
+   
+   
+    void close () throws IOException{
+       
+        helper.chan.send(new Push(client.user, client.draftTag, client.draftLines));
+           
+            client.ticketStateTag.add(client.draftTag);
+            changestate();
+   
+   }
+    
+    void changestate(){
+            client.state = "Main";
+            client.draftTag = null;
+    }
 }
