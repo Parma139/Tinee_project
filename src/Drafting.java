@@ -61,7 +61,15 @@ public class Drafting {
    
    }
     
-    void changestate(){
+   
+
+    void discard() {
+        
+         changestate();
+    }
+    
+    
+     void changestate(){
             client.state = "Main";
             client.draftTag = null;
     }

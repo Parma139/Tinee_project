@@ -15,7 +15,13 @@ import sep.tinee.net.message.ReadRequest;
  */
 public class Main {
     
-       void readsetup(String arg) throws IOException, ClassNotFoundException{
+//    CPClient client;
+//    
+//    public Main(CPClient client){
+//        this.client = client;
+//    }
+    
+    void readsetup(String arg) throws IOException, ClassNotFoundException{
 
           CLFormatter helper = null;
           helper.chan.send(new ReadRequest(arg));
@@ -23,4 +29,25 @@ public class Main {
           System.out.print(
           helper.formatRead(arg, rep.users, rep.lines));
     }  
-}
+       
+       
+//    void manageSetup(){
+//       
+//    
+//         if (client.ticket == false ) {
+//          // Switch to "Drafting" state and start a new "draft
+//          
+//          client.state = "Drafting";
+//          client.draftTag = rawArgs[0];
+//        }
+//        else{
+//             
+//            System.out.println("\n >>>>>>>>>>> Ticket has been closed >>>>>>>>>>>");
+//        }
+//       
+//      
+//       
+//       }
+       
+    }
+

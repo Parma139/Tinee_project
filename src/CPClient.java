@@ -206,7 +206,15 @@ public class CPClient {
            controller.setCommand(closeSetup);
            controller.userInput();
         
-        }        
+        }  
+        
+         else if ("discard".startsWith(cmd)) {
+
+           DiscardSetup discardSetup = new DiscardSetup(drafting);
+           controller.setCommand(discardSetup);
+           controller.userInput();
+        
+        } 
               
         else {
           System.out.println("Could not parse command/args.");
