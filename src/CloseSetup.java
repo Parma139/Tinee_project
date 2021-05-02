@@ -12,19 +12,27 @@ import java.util.logging.Logger;
  */
 
 /**
- *
- * @author parma
+ *The class represents the Closesetup  
+ * @author 16084787
  */
 public class CloseSetup implements Command{
     
     Drafting drafting;
    
+    /**
+     *The constructor pass the specific draft
+     * @param draft the draft is instance variable 
+     * that allow to access the object or function according to user request  
+     */
     public CloseSetup (Drafting draft){
         
         this.drafting = draft;
         
     }
 
+    /**
+     * this execute the method which user request
+     */
     @Override
     public void execute() {
 

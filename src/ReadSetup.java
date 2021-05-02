@@ -17,12 +17,21 @@ public class ReadSetup implements Command{
     
     Main main;
     String argstmp;
+
+    /**
+     *
+     * @param main
+     * @param args
+     */
     public ReadSetup (Main main, String args){
         
         this.main = main;
         this.argstmp = args;
     }
 
+    /**
+     *
+     */
     @Override
     public void execute() {
         try {

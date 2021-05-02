@@ -18,12 +18,19 @@ public class PushSetup implements Command{
        
     Drafting drafting;
     
+    /**
+     *
+     * @param draft
+     */
     public PushSetup (Drafting draft){
         
         this.drafting = draft;
         
     }
 
+    /**
+     *
+     */
     @Override
     public void execute() {
         

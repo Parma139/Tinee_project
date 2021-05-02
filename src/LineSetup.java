@@ -12,12 +12,21 @@ public class LineSetup implements Command{
     
     Drafting drafting;
     String[] argstmp;
+
+    /**
+     *
+     * @param draft
+     * @param args
+     */
     public LineSetup (Drafting draft, String[] args){
         
         this.drafting = draft;
         this.argstmp = args;
     }
 
+    /**
+     *
+     */
     @Override
     public void execute() {
         try {

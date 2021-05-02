@@ -20,7 +20,13 @@ public class Main {
 //    public Main(CPClient client){
 //        this.client = client;
 //    }
-    
+   
+    /**
+     * 
+     * @param arg
+     * @throws IOException
+     * @throws ClassNotFoundException 
+     */
     void readsetup(String arg) throws IOException, ClassNotFoundException{
 
           CLFormatter helper = null;

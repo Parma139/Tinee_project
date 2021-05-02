@@ -16,12 +16,19 @@ public class DiscardSetup implements Command{
         
     Drafting drafting;
     
+    /**
+     *
+     * @param draft
+     */
     public DiscardSetup (Drafting draft){
         
         this.drafting = draft;
         
     }
 
+    /**
+     *
+     */
     @Override
     public void execute() {
 

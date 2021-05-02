@@ -12,10 +12,17 @@ public class CommandController {
     
      Command userinput;
     
+    /**
+     *
+     * @param command
+     */
     public void setCommand(Command command){
         userinput = command;
     }
     
+    /**
+     *
+     */
     public void userInput(){
         userinput.execute();
     }

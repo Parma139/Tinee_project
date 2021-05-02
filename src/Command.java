@@ -5,12 +5,11 @@
  */
 
 /**
- *
- * @author parma
+ * This interface specifies the behaviour expected from the CPCLient
+ * @author 16084787
  */
 public interface Command {
     
-    
-       void execute();
+   void execute();
     
 }

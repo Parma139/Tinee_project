@@ -86,6 +86,13 @@ public class CLFormatter {
   
   //Message format class and class use message formatting which use message
     //Object....... this is the array of the object and in this numebr need to pass in order
+
+    /**
+     * This is a messageformatter which is use to assign a value for a plae holder in I18n
+     * @param message It pass the message to the print
+     * @param params object... is an array of the object which allow to add any number of params(parameter) in this case it have user as parameter
+     * @return it return the message with assing string for placeholder
+     */
     public static String println(String message, Object...params){
         
 //        System.out.println(MessageFormat.format(message,params));

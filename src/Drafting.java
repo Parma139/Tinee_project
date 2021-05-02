@@ -23,16 +23,27 @@ public class Drafting {
     CPClient client; 
     CLFormatter helper = null;
      
+    /**
+     *
+     * @param client
+     */
     public Drafting(CPClient client){
         this.client = client;
     }
-    
+    /**
+     * 
+     * @param arg 
+     */
    void linesetup(String[] arg){
 
          String line = Arrays.stream(arg).collect(Collectors.joining(" "));
          client.draftLines.add(line);  
     }
    
+   /**
+    * 
+    * @throws IOException 
+    */
    void push () throws IOException{
       
         helper.chan.send(new Push(client.user, client.draftTag, client.draftLines));
@@ -40,6 +51,9 @@ public class Drafting {
           
    }
     
+   /**
+    * 
+    */
    void undo (){
        
        
@@ -51,7 +65,10 @@ public class Drafting {
    
    }
    
-   
+   /**
+    * 
+    * @throws IOException 
+    */
     void close () throws IOException{
        
         helper.chan.send(new Push(client.user, client.draftTag, client.draftLines));
@@ -62,12 +79,16 @@ public class Drafting {
    }
     
    
-
+/**
+ * 
+ */
     void discard() {
         
          changestate();
     }
-    
+ /**
+  * 
+  */   
     
      void changestate(){
             client.state = "Main";

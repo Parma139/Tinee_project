@@ -31,13 +31,30 @@ public class CPClient {
     String host;
     int port;
     CommandController controller = new CommandController();
+
+    /**
+     *
+     */
     public LinkedList<String> draftLines = new LinkedList<>();  // Holds the current draft data when in the "Drafting" state
+
+    /**
+     *
+     */
     public LinkedList<String> ticketStateTag = new LinkedList<>();
-     public String state = "Main";  // Initial state
+
+    /**
+     *
+     */
+    public String state = "Main";  // Initial state
+
+    /**
+     *
+     */
     public String draftTag = null;                              //String draftTag = null; declared in outside of the method
     
-
-
+    /**
+     *
+     */
     public CPClient (){
       this.user = "parma";
       this.host = "localhost";
@@ -45,6 +62,11 @@ public class CPClient {
 
     }
 
+    /**
+     *
+     * @param args
+     * @throws IOException
+     */
     public static void main (String[] args) throws IOException{
 
       CPClient client = new CPClient();

@@ -13,12 +13,19 @@ public class UndoSetup implements Command{
     
     Drafting drafting;
   
+    /**
+     *
+     * @param draft
+     */
     public UndoSetup (Drafting draft){
         
         this.drafting = draft;
      
     }
 
+    /**
+     *
+     */
     @Override
     public void execute() {
             drafting.undo();
