@@ -10,8 +10,8 @@ import sep.tinee.net.message.ReadRequest;
  */
 
 /**
- *
- * @author parma
+ * Constructor include all the command which is avaliable in the main stage for the user
+ * @author 16084787
  */
 public class Main {
     
@@ -20,7 +20,14 @@ public class Main {
 //    public Main(CPClient client){
 //        this.client = client;
 //    }
-    
+   
+    /**
+     * 
+     * @param arg arg hold drafttag or tag name to look in the sever that this tag have any saved message or not
+     * @throws IOException IOException are thrown when there is any input/output file operational issue
+     * while reading or writing the input or files
+     * @throws ClassNotFoundException ClassNotFoundException are thrown when application not able to find the class path
+     */
     void readsetup(String arg) throws IOException, ClassNotFoundException{
 
           CLFormatter helper = null;

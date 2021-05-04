@@ -22,29 +22,33 @@ import sep.tinee.net.message.ReadRequest;
 
 /**
  *
- * @author parma
+ * @author 16084787
  */
 public class CPClient {
 
 
-    String user;
+    String user; 
     String host;
     int port;
-    CommandController controller = new CommandController();
+    CommandController controller = new CommandController(); // invoker which passes a command object that can be used to make requests.
     public LinkedList<String> draftLines = new LinkedList<>();  // Holds the current draft data when in the "Drafting" state
-    public LinkedList<String> ticketStateTag = new LinkedList<>();
-     public String state = "Main";  // Initial state
+    public LinkedList<String> ticketStateTag = new LinkedList<>(); //save tag name for close tinee
+    public String state = "Main";  // Initial state
     public String draftTag = null;                              //String draftTag = null; declared in outside of the method
     
-
-
     public CPClient (){
-      this.user = "parma";
+      this.user = "16084787";
       this.host = "localhost";
       this.port = 8888;
 
     }
 
+    /**
+     *This is the main method which run the code
+     * @param args Args passes information to the application and each string(information) is called a command line argument
+     * @throws IOException IOException are thrown when there is any input/output file operational issue
+     * while reading or writing the input or files
+     */
     public static void main (String[] args) throws IOException{
 
       CPClient client = new CPClient();

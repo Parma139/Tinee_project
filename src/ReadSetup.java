@@ -11,24 +11,33 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author parma
+ * @author 16084787
  */
 public class ReadSetup implements Command{
     
     Main main;
     String argstmp;
-    public ReadSetup (Main main, String args){
+
+    /**
+     *Constructor pass the specific drafting that this command is going to control
+     * @param main main is the drafting object that is going to be the receiver of the object when execute will called
+     * @param tagname it hold drafttag or tagname which use to check this tag include any message on the server
+     */
+    public ReadSetup (Main main, String tagname){
         
         this.main = main;
-        this.argstmp = args;
+        this.argstmp = tagname;
     }
 
+    /**
+     * this method will calls the discard() method on the receiving object, which is the drafting that are controlling
+     */
     @Override
     public void execute() {
         try {
             main.readsetup(argstmp);
         } catch (Exception ex) {
-            System.out.println("I am in readsetups class");
+            System.out.println("Invalid input try again");
         } 
 
     }
