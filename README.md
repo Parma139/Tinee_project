@@ -1,4 +1,4 @@
-# Tinee_project 
+# A Text - based Ticket System
 
 ## Description
 
