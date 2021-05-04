@@ -14,8 +14,8 @@ import sep.tinee.net.message.Push;
  */
 
 /**
- *
- * @author parma
+ *Drafting class is include all the command request which are available at drafting stage for the user 
+ * @author 16084787
  */
 public class Drafting {
     
@@ -24,15 +24,15 @@ public class Drafting {
     CLFormatter helper = null;
      
     /**
-     *
-     * @param client
+     *Constructor hold the instance of CPClient
+     * @param client client is instance of the CPClient class
      */
     public Drafting(CPClient client){
         this.client = client;
     }
     /**
      * 
-     * @param arg 
+     * @param arg arg hold the message requested by the user to save in the sever
      */
    void linesetup(String[] arg){
 
@@ -42,7 +42,8 @@ public class Drafting {
    
    /**
     * 
-    * @throws IOException 
+    * @throws IOException  IOException are thrown when there is any input/output file operational issue
+    * while reading or writing the input or files
     */
    void push () throws IOException{
       
@@ -52,7 +53,7 @@ public class Drafting {
    }
     
    /**
-    * 
+    * undo method is remove the last enter tinee message by the user
     */
    void undo (){
        
@@ -67,7 +68,8 @@ public class Drafting {
    
    /**
     * 
-    * @throws IOException 
+    * @throws IOException  IOException are thrown when there is any input/output file operational issue
+    * while reading or writing the input or files
     */
     void close () throws IOException{
        
@@ -80,14 +82,14 @@ public class Drafting {
     
    
 /**
- * 
+ * discard method is use to get back to the main stage without saving the enter tinee message by the user
  */
     void discard() {
         
          changestate();
     }
  /**
-  * 
+  * change state is use to set the state and drafttag value to initial stage 
   */   
     
      void changestate(){

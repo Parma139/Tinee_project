@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  *
- * @author parma
+ * @author 16084787
  */
 public class DiscardSetup implements Command{
     
@@ -17,8 +17,8 @@ public class DiscardSetup implements Command{
     Drafting drafting;
     
     /**
-     *
-     * @param draft
+     *Constructor pass the specific drafting that this command is going to control
+     * @param draft draft is the drafting object that is going to be the receiver of the object when execute will called
      */
     public DiscardSetup (Drafting draft){
         
@@ -27,11 +27,10 @@ public class DiscardSetup implements Command{
     }
 
     /**
-     *
+     * this method will calls the discard() method on the receiving object, which is the drafting that are controlling
      */
     @Override
     public void execute() {
-
                drafting.discard();
     }
     

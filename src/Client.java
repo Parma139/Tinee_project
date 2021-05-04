@@ -75,17 +75,33 @@
 //  String user;
 //  String host;
 //  int port;
+//
+// boolean printSplash = true;
 //  
-//  Client() {
+//
+//  Client(String userid, String hostid, int portno) {
 //      
-//      this.user = "Parma";
-//      this.host = "localhost";
-//      this.port = 8888;
+//      this.user = userid;
+//      this.host = hostid;
+//      this.port = portno;
 //  }
 //
 //  public static void main(String[] args) throws IOException {
-//     
-//      Client client = new Client();
+//      
+//      Scanner userDetails;
+//      userDetails = new Scanner(System.in);
+//      
+//      System.out.println("\nPlease enter UserId");
+//      String userid = userDetails.next();
+//      
+//      System.out.println("\nPlease enter HostId");
+//      String hostid = userDetails.next();
+//      
+//      System.out.println("\nPlease enter PortNo");
+//      int portno = userDetails.nextInt();
+//           
+//
+//      Client client = new Client(userid, hostid, portno);
 //      client.run();
 //    
 //  }
@@ -100,39 +116,24 @@
 //
 //    BufferedReader reader = null;
 //    CLFormatter helper = null;
-//      
 //    try {
-//    reader = new BufferedReader(new InputStreamReader(System.in));
-//       
-//      if (user == null || host == null) {
-//         
-//         System.err.println("User/host has not been set. \n"); 
-//        
-//         Scanner userDetails = new Scanner (System.in);
-//         System.err.println("Please enter User/host name:"); 
-//         String userInput = userDetails.next();
-//           
-//         if (user == null){
-//         this.user = userInput; 
-//         }
-//         else {
-//         this.host = userInput;
-//         }
-//         
-//      run();
-//      
+//      reader = new BufferedReader(new InputStreamReader(System.in));
+//
+//      if (this.user.isEmpty() || this.host.isEmpty()) {
+//         System.err.println("User/host has not been set.");
+//         System.exit(1);                                  
 //      }
 //      
-//      else{
-//        helper = new CLFormatter(this.host, this.port);                     
-//        System.out.print(helper.formatSplash(this.user));
+//         helper = new CLFormatter(this.host, this.port);
+//
+//      if (printSplash){                             
+//         System.out.print(helper.formatSplash(this.user));
+//     }
 //        loop(helper, reader);
-//      }
-//     
-//    }
+//    } 
 //    
 //    catch (Exception ex) {
-//         System.err.println("User/host has not been set.");
+//      throw new RuntimeException(ex);
 //    } 
 //    
 //    finally {
@@ -192,7 +193,7 @@
 //          // Switch to "Drafting" state and start a new "draft"
 //          state = "Drafting";
 //          draftTag = rawArgs[0];
-//        } else if ("read".startsWith(cmd)){
+//        } else if ("read".startsWith(cmd)) {
 //          // Read tines on server
 //          helper.chan.send(new ReadRequest(rawArgs[0]));
 //          ReadReply rep = (ReadReply) helper.chan.receive();
@@ -205,10 +206,9 @@
 //      else if (state.equals("Drafting")) {
 //        if ("line".startsWith(cmd)) {
 //          // Add a tine message line
-//          String line = Arrays.stream(rawArgs).collect(Collectors.joining());
-//          System.out.println("Draftline before.add line: "+ draftLines);
+//          String line = Arrays.stream(rawArgs).
+//              collect(Collectors.joining());
 //          draftLines.add(line);
-//          System.out.println("Draftline after.add line: "+ draftLines);
 //        } else if ("push".startsWith(cmd)) {
 //          // Send drafted tines to the server, and go back to "Main" state
 //          helper.chan.send(new Push(user, draftTag, draftLines));

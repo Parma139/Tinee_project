@@ -9,7 +9,7 @@ import sep.tinee.net.channel.ClientChannel;
 import sep.tinee.net.message.Message;
 
 /**
- * A helper class for the current prototype {@link Client client}.  <i>E.g.</i>,
+ * A helper class for the current prototype {@link sep.tinee.server }.  <i>E.g.</i>,
  * for formatting Command Line messages.
  */
 public class CLFormatter {

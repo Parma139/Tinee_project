@@ -20,10 +20,9 @@ public class CloseSetup implements Command{
     Drafting drafting;
    
     /**
-     *The constructor pass the specific draft
-     * @param draft the draft is instance variable 
-     * that allow to access the object or function according to user request  
-     */
+    *Constructor pass the specific drafting that this command is going to control
+    * @param draft draft is the drafting object that is going to be the receiver of the object when execute will called
+    */
     public CloseSetup (Drafting draft){
         
         this.drafting = draft;
@@ -31,7 +30,7 @@ public class CloseSetup implements Command{
     }
 
     /**
-     * this execute the method which user request
+     * this method will calls the discard() method on the receiving object, which is the drafting that are controlling
      */
     @Override
     public void execute() {
@@ -39,7 +38,7 @@ public class CloseSetup implements Command{
         try {
             drafting.close();
         } catch (IOException ex) {
-               System.out.println("I am in Close setup");
+               System.out.println("Invalid input try again");
             }
     }
 }
