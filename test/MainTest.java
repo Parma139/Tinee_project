@@ -21,11 +21,13 @@ public class MainTest {
      */
     @Test
     public void testReadsetup() throws Exception {
-        System.out.println("readsetup");
-        String arg = "";
-        Main instance = new Main();
-        instance.readsetup(arg);
-        fail("The test case is a prototype.");
+        
+            String rawargs = "kk";
+            CommandController controller = new CommandController();    
+            Main main = new Main();
+            ReadSetup menusetup = new ReadSetup(main, rawargs);
+            controller.setCommand(menusetup);
+            controller.userInput();
     }
     
 }

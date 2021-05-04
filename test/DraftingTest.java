@@ -4,6 +4,11 @@
  * and open the template in the editor.
  */
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Iterator;
+import static jdk.nashorn.tools.ShellFunctions.input;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -13,77 +18,103 @@ import static org.junit.Assert.*;
  */
 public class DraftingTest {
    
-    CPClient client;
-    public DraftingTest(CPClient Client) {
-        
-        this.client = client;
-    }
+    CPClient client = new CPClient();
+    
 
+   
     /**
      * Test of linesetup method, of class Drafting.
      */
     @Test
     public void testLinesetup() {
         
-        String[] arg = null;
-        Drafting instance = null;
-        instance.linesetup(arg);
+        String[] arg = {"hlo"};       
+        CommandController controller = new CommandController(); 
+        Drafting drafting = new Drafting(client);
+        LineSetup linesetup = new LineSetup(drafting, arg);
+        controller.setCommand(linesetup);
+        controller.userInput();
+        String expectedResult = "hlo";
+        String result = client.draftLines.getLast();
+        assertEquals(expectedResult, result);
 
     }
 
     /**
      * Test of push method, of class Drafting.
      */
-//    @Test
-//    public void testPush() throws Exception {
-//        System.out.println("push");
-//        Drafting instance = null;
-//        instance.push();
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of undo method, of class Drafting.
-//     */
-//    @Test
-//    public void testUndo() {
-//        System.out.println("undo");
-//        Drafting instance = null;
-//        instance.undo();
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of close method, of class Drafting.
-//     */
-//    @Test
-//    public void testClose() throws Exception {
-//        System.out.println("close");
-//        Drafting instance = null;
-//        instance.close();
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of discard method, of class Drafting.
-//     */
-//    @Test
-//    public void testDiscard() {
-//        System.out.println("discard");
-//        Drafting instance = null;
-//        instance.discard();
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of changestate method, of class Drafting.
-//     */
-//    @Test
-//    public void testChangestate() {
-//        System.out.println("changestate");
-//        Drafting instance = null;
-//        instance.changestate();
-//        fail("The test case is a prototype.");
-//    }
-//    
+    @Test
+    public void testPush() throws Exception {
+        CommandController controller = new CommandController(); 
+        Drafting drafting = new Drafting(client);
+        PushSetup pushSetup = new PushSetup(drafting);
+        controller.setCommand(pushSetup);
+        controller.userInput();
+    }
+
+    /**
+     * Test of undo method, of class Drafting.
+     */
+    @Test
+    public void testUndo() {
+        
+           CommandController controller = new CommandController(); 
+           Drafting drafting = new Drafting(client);
+           UndoSetup undosetup = new UndoSetup(drafting);
+           controller.setCommand(undosetup);
+           controller.userInput();
+           String expectedResult = null;
+           String result = client.draftLines.getLast();
+           assertEquals(expectedResult, result);
+            
+            }
+    
+
+    /**
+     * Test of close method, of class Drafting.
+     */
+    @Test
+    public void testClose() throws Exception {
+           CommandController controller = new CommandController(); 
+           Drafting drafting = new Drafting(client);
+           CloseSetup closeSetup = new CloseSetup(drafting);
+           controller.setCommand(closeSetup);
+           controller.userInput();
+           String expectedResult = client.draftTag;
+           String result = client.ticketStateTag.getLast();
+           assertEquals(expectedResult, result);
+    }
+
+    /**
+     * Test of discard method, of class Drafting.
+     */
+    @Test
+    public void testDiscard() {
+        CommandController controller = new CommandController(); 
+        Drafting drafting = new Drafting(client);
+        DiscardSetup discardSetup = new DiscardSetup(drafting);
+           controller.setCommand(discardSetup);
+           controller.userInput();
+        String expectedResult = "Main";
+        String result = client.state;
+        assertEquals(expectedResult, result);
+    }
+
+    /**
+     * Test of changestate method, of class Drafting.
+     */
+    @Test
+    public void testChangestate() {
+        
+        Drafting instance = new Drafting(client);
+        instance.changestate();
+        String expectedResult1 = "Main";
+        String result1 = client.state;
+        String expectedResult = null;
+        String result = client.draftTag;
+        assertEquals(expectedResult1, result1);
+        assertEquals(expectedResult, result);
+       
+    }
+    
 }

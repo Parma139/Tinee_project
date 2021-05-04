@@ -11,40 +11,39 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author parma
+ * @author 16084787
  */
 public class CPClientTest {
     
-    public CPClientTest() {
-    }
+    
 
     /**
      * Test of main method, of class CPClient.
      */
     @Test
     public void testMain() throws Exception {
-        System.out.println("main");
-       String[] args = {"username", "localhost", "8888"};
-       String input = "read parma";
+      
+      String[] args = {"username", "localhost", "8888"};
+      String input = "read unknown\n manage message\n line hey runnting for testing \npush \n read message \n manage message\n line m1\n line m2\n undo\n push \nmanage message\n line m2\n discard\n manage message\n line m3\n close\n manage message\n exit";  
       ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes("UTF8"));
       System.setIn(in); // Sets System.in to the supplied stream
-//      Client.main(args);
+      CPClient.main(args);
     }
 
-    /**
+ /**
      * Test of run method, of class CPClient.
-//     */
-//    @Test
-//    public void testRun() throws Exception {
-//        System.out.println("run");
-//        CPClient instance = new CPClient();
-//        instance.run();
-//        fail("The test case is a prototype.");
-//    }
-//
+     */
+    @Test
+    public void testRun() throws Exception {
+        
+        CPClient instance = new CPClient();
+        instance.run();
+    
+    }
+
 //    /**
 //     * Test of loop method, of class CPClient.
-//     */
+//    */
 //    @Test
 //    public void testLoop() throws Exception {
 //        System.out.println("loop");
@@ -53,6 +52,5 @@ public class CPClientTest {
 //        CPClient instance = new CPClient();
 //        instance.loop(helper, reader);
 //        fail("The test case is a prototype.");
-//    }
-//    
+//    }   
 }
