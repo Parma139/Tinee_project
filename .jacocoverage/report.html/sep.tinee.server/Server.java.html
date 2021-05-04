@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Server.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;Tinee_project&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">sep.tinee.server</a> &gt; <span class="el_source">Server.java</span></div><h1>Server.java</h1><pre class="source lang-java linenums">/*
+ * This file is part of the base framework for the 6COM1038 Software Engineering
+ * Practice coursework assessments -- a command line client application for a
+ * text-based Ticket System.
+ *
+ * &lt;i&gt;Warning:&lt;/i&gt; you are advised &lt;b&gt;not&lt;/b&gt; to modify this file, nor any of
+ * the base framework, i.e., the packages {@link sep.tinee.server},
+ * {@link sep.tinee.server}, {@link sep.tinee.server} and
+ * {@link sep.tinee.server}. Finally, you submit only your client code, which
+ * will be tested against the base framework as provided.
+ *
+ * If you do wish to (temporarily) modify the base framework for debugging or
+ * your own interest, please bear in mind the above point.
+ */
+package sep.tinee.server;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import sep.tinee.net.message.Message;
+import sep.tinee.net.message.Push;
+
+/**
+ * {@code Server} is a minimal but adequately functional and robust Tinee
+ * server for you to develop and test your client against.
+ * &lt;p&gt;
+ * The argument required to run the server corresponds to {@link #Server(int)}:
+ * the port number that the server should listen on.
+ * &lt;p&gt;
+ * You can compile and run this server using &lt;b&gt;NetBeans&lt;/b&gt;; e.g., right-click
+ * this file in the NetBeans editor and select &quot;Run File&quot;.  Note, to provide
+ * the above argument, you should set up a &lt;b&gt;run configuration&lt;/b&gt; for this
+ * class: {@literal -&gt;} &quot;Set Project Configuration&quot; {@literal -&gt;} &quot;Customize...&quot;
+ * {@literal -&gt;} &quot;New...&quot; -- the &quot;Main Class&quot; is
+ * {@code sep.tinee.server.Server}, and write the port value (e.g.,
+ * {@code 8888}) in &quot;Arguments&quot;.
+ * &lt;p&gt;
+ * Assuming compilation using NetBeans (etc.), you can also run {@code Server}
+ * from the command line, e.g., on Windows, run:
+ * &lt;ul&gt;
+ * &lt;li style=&quot;list-style-type: none;&quot;&gt;
+ * {@code C:\...\tinee&gt; java -cp build\classes sep.tinee.server.Server 8888}
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * &lt;i&gt;Note:&lt;/i&gt; On some platforms (e.g., Windows), you may be prompted
+ * with a security warning due to the server opening a network socket. You must
+ * grant this permission for the server to function properly.
+ * &lt;p&gt;
+ * An instance of {@code Server} understands and communicates the messages in
+ * {@link sep.tinee.net.message}.
+ * &lt;ul&gt;
+ * &lt;li&gt; {@link sep.tinee.net.message.Bye} - tells the {@code Server} to end
+ * this communication session with the client.
+ * &lt;li&gt; {@link sep.tinee.net.message.ShowRequest} - request the set of ticket
+ * tags and creators (user names) recorded by the {@code Server}.
+ * &lt;ul&gt;
+ * &lt;li&gt; {@link sep.tinee.net.message.ShowReply} - the {@code Server}'s
+ * reply: the set of ticket tags and creators (possibly empty).
+ * &lt;/ul&gt;
+ * &lt;li&gt; {@link sep.tinee.net.message.ReadRequest} - request the (sub)list of
+ * tines recorded by the {@code Server} for the specified tag, from the
+ * specified index (inclusive, starting from index 0). Note: The tag may not
+ * be &lt;i&gt;explicitly&lt;/i&gt; recorded by the {@code Server}.
+ * &lt;ul&gt;
+ * &lt;li&gt; {@link sep.tinee.net.message.ReadReply} - the {@code Server}'s reply:
+ * the list of tines (possibly empty).
+ * &lt;/ul&gt;
+ * &lt;li&gt; {@link sep.tinee.net.message.Push} - append a non-empty list of
+ * tines to each (possibly new) tag in the non-empty set of ticket tags.
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * Your client should use {@link sep.tinee.net.channel.ClientChannel} top send
+ * and receive messages of the above types with a server: see the
+ * {@link sep.tinee.net.channel.ClientChannel#send(Message)} and
+ * {@link sep.tinee.net.channel.ClientChannel#receive()} methods.
+ *
+ * @author rhu1 {@literal &lt;r.z.h.hu@herts.ac.uk&gt;}
+ */
+public class Server implements AutoCloseable {
+
+  protected final boolean debug;
+
+  private final ServerSocket servSock;
+
+<span class="nc" id="L98">  private final Object mutex = new Object();</span>
+
+<span class="nc" id="L100">  private final ConcurrentLinkedQueue&lt;Thread&gt; threads</span>
+      = new ConcurrentLinkedQueue&lt;&gt;();
+
+  /*
+   * {@code db} maps a tag to a list of (user, line) pairs.
+   * {@code Server} is neutral w.r.t. tag/line data types used by a client -
+   * it simply records tags, user names and text as strings.
+   * Invariant: Push.CLOSE_LINE only occurs in last pair of any tag.
+   * Invariant: a CLOSE_LINE user is the same as the first line user
+   */
+<span class="nc" id="L110">  protected final LinkedHashMap&lt;String, List&lt;Pair&lt;String, String&gt;&gt;&gt; db</span>
+      = new LinkedHashMap&lt;&gt;();
+
+  /**
+   * Create a new Tinee server bound to the specified port. This is
+   * equivalent to
+   * {@linkplain #Server(boolean,int) Server}{@code (false, port)}.
+   *
+   * @param port The port number that the server will listen on
+   * @throws IOException If the server socket could not be opened
+   */
+  public Server(final int port) throws IOException {
+<span class="nc" id="L122">    this(false, port);</span>
+<span class="nc" id="L123">  }</span>
+
+  /**
+   * Create a new Tinee server, bound to the specified port, with debug
+   * output enabled or disabled.
+   *
+   * @param debug Enable or disable local debug output printing ({@code true}
+   *              means enabled)
+   * @param port  The port number that the servSock will listen on
+   * @throws IOException If the server socket could not be opened
+   */
+<span class="nc" id="L134">  public Server(final boolean debug, final int port) throws IOException {</span>
+<span class="nc" id="L135">    this.debug = debug;</span>
+<span class="nc" id="L136">    this.servSock = new ServerSocket(port);</span>
+<span class="nc" id="L137">  }</span>
+
+  /**
+   * To be called once, and once only, on a {@code Server} instance to start
+   * accepting and serving client connections.
+   */
+  public void run() {
+    while (true) {
+      try {
+<span class="nc" id="L146">        final Socket s = this.servSock.accept();</span>
+<span class="nc" id="L147">        Thread t = new ServerThread(this, s);</span>
+<span class="nc" id="L148">        this.threads.add(t);  // TODO: currently never cleaned</span>
+<span class="nc" id="L149">        t.start();</span>
+<span class="nc" id="L150">      } catch (SocketException ex) {</span>
+        // Server socket closed -- swallow silently
+<span class="nc" id="L152">      } catch (IOException ex) {</span>
+<span class="nc" id="L153">        Logger.getLogger(Server.class.getName()).log(Level.WARNING,</span>
+            &quot;Connection accept error: &quot;, ex);
+<span class="nc" id="L155">      }</span>
+    }
+  }
+
+  /**
+   * Shut down this Tinee server.
+   */
+  @Override
+  public void close() {
+<span class="nc bnc" id="L164" title="All 2 branches missed.">    for (Thread t : this.threads) {</span>
+      try {
+<span class="nc" id="L166">        t.join(1000);</span>
+<span class="nc" id="L167">      } catch (InterruptedException ex) {</span>
+<span class="nc" id="L168">        throw new RuntimeException(ex);</span>
+<span class="nc" id="L169">      }</span>
+<span class="nc" id="L170">    }</span>
+    try {
+<span class="nc" id="L172">      this.servSock.close();</span>
+<span class="nc" id="L173">    } catch (IOException ex) {</span>
+<span class="nc" id="L174">      Logger.getLogger(Server.class.getName()).log(Level.WARNING,</span>
+          &quot;Server socket close error: &quot;, ex);
+<span class="nc" id="L176">    }</span>
+<span class="nc" id="L177">  }</span>
+
+  /* Tines -- synchronized routines (keep critical sections small) */
+
+  protected void addTines(final Set&lt;String&gt; tags,
+      List&lt;Pair&lt;String, String&gt;&gt; tines) {
+
+<span class="nc" id="L184">    synchronized (this.mutex) {</span>
+      //Date now = Calendar.getInstance().getTime();
+      //String stamp = new SimpleDateFormat(&quot;dd/MM/yyyy HH:mm&quot;).format(now);  // Inconvenient for testing
+      nextTag:
+<span class="nc bnc" id="L188" title="All 2 branches missed.">      for (final String tag : tags) {</span>
+<span class="nc" id="L189">        List&lt;Pair&lt;String, String&gt;&gt; curr = this.db.get(tag);</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        if (curr == null) {</span>
+<span class="nc" id="L191">          curr = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L192">          this.db.put(tag, curr);</span>
+        }
+
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        boolean isClosed = !curr.isEmpty()</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">            &amp;&amp; curr.get(curr.size() - 1).right.equals(Push.CLOSE_LINE);</span>
+<span class="nc" id="L197">        int i = 0;</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">        for (Pair&lt;String, String&gt; tine : tines) {</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">          if (isClosed) {</span>
+<span class="nc" id="L200">            String msg = &quot;Tag already closed, discarding: &quot;</span>
+<span class="nc" id="L201">                + tines.subList(i, tines.size());</span>
+<span class="nc" id="L202">            Logger.getLogger(Server.class.getName()).log(Level.WARNING, msg);</span>
+<span class="nc" id="L203">            continue nextTag;</span>
+          }
+<span class="nc bnc" id="L205" title="All 2 branches missed.">          if (tine.right.equals(Push.CLOSE_LINE)) {</span>
+<span class="nc bnc" id="L206" title="All 4 branches missed.">            if (!curr.isEmpty() &amp;&amp; !tine.left.equals(curr.get(0).left)) {</span>
+<span class="nc" id="L207">              String msg = &quot;Discarding invalid close by &quot; + tine.left</span>
+<span class="nc" id="L208">                  + &quot;, tag owned by &quot; + curr.get(0).left;</span>
+<span class="nc" id="L209">              Logger.getLogger(Server.class.getName()).log(Level.WARNING, msg);</span>
+<span class="nc" id="L210">            } else {</span>
+<span class="nc" id="L211">              isClosed = true;</span>
+<span class="nc" id="L212">              curr.add(tine);</span>
+            }
+          } else {
+<span class="nc" id="L215">            curr.add(tine);</span>
+          }
+<span class="nc" id="L217">          i++;</span>
+<span class="nc" id="L218">        }</span>
+
+<span class="nc" id="L220">      }</span>
+<span class="nc" id="L221">    }</span>
+<span class="nc" id="L222">  }</span>
+
+  // @return map: tag -&gt; creator  -- keyset ordered following this.db
+  protected LinkedHashMap&lt;String, String&gt; getTags() {
+<span class="nc" id="L226">    synchronized (this.mutex) {</span>
+<span class="nc" id="L227">      return this.db.entrySet().stream().collect(</span>
+<span class="nc" id="L228">          Collectors.toMap(Entry::getKey, e -&gt; e.getValue().get(0).left,</span>
+              (x, y) -&gt; {
+<span class="nc" id="L230">                throw new RuntimeException(&quot;Tags not distinct?&quot;);</span>
+              }, LinkedHashMap::new));
+<span class="nc" id="L232">    }</span>
+  }
+
+  // Pre: index &gt;= 0 -- guaranteed by ReadRequest
+  protected List&lt;Pair&lt;String, String&gt;&gt; getTines(final String tag,
+      final int index) {
+<span class="nc" id="L238">    synchronized (this.mutex) {</span>
+<span class="nc bnc" id="L239" title="All 2 branches missed.">      if (!this.db.containsKey(tag)) {</span>
+<span class="nc" id="L240">        return Collections.emptyList();</span>
+      }
+<span class="nc" id="L242">      final List&lt;Pair&lt;String, String&gt;&gt; tines = this.db.get(tag);</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">      if (index &gt;= tines.size()) {</span>
+<span class="nc" id="L244">        return Collections.emptyList();</span>
+      }
+<span class="nc" id="L246">      return Collections.unmodifiableList(tines.subList(index, tines.size()));</span>
+      // ^Because SubList is not Seriablizable
+<span class="nc" id="L248">    }</span>
+  }
+
+  /* Main */
+
+  /**
+   * Create and run a {@code Server} instance.
+   *
+   * @param args Use {@code -h} to list the supported options
+   * @throws IOException If the servSock could not be created
+   */
+  public static void main(final String[] args) throws IOException {
+<span class="nc" id="L260">    final String help</span>
+        = &quot;Usage:  java [-cp ...] sep.tinee.server.Server [-s] port\n&quot;
+        + &quot;            --silent -s  Suppress debug messages\n&quot;
+        + &quot;            --help   -h  Print this help message&quot;;
+<span class="nc" id="L264">    if (Arrays.stream(args)</span>
+<span class="nc bnc" id="L265" title="All 6 branches missed.">        .anyMatch(x -&gt; &quot;--help&quot;.equals(x) || &quot;-h&quot;.equals(x))) {</span>
+<span class="nc" id="L266">      System.out.println(help);</span>
+<span class="nc" id="L267">      System.exit(0);</span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">    } else if (args.length &lt; 1) {</span>
+<span class="nc" id="L269">      System.err.println(help);</span>
+<span class="nc" id="L270">      System.exit(1);</span>
+    }
+<span class="nc" id="L272">    final int port = Integer.parseInt(args[args.length - 1]);</span>
+<span class="nc bnc" id="L273" title="All 2 branches missed.">    final boolean silent = args.length &gt; 1</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">        &amp;&amp; Stream.of(&quot;--silent&quot;, &quot;-s&quot;).anyMatch(x -&gt; x.equals(args[0]));</span>
+<span class="nc bnc" id="L275" title="All 2 branches missed.">    try (final Server s = new Server(!silent, port)) {</span>
+<span class="nc" id="L276">      s.run();</span>
+<span class="nc bnc" id="L277" title="All 8 branches missed.">    }</span>
+<span class="nc" id="L278">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

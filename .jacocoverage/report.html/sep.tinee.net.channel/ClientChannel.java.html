@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ClientChannel.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;Tinee_project&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">sep.tinee.net.channel</a> &gt; <span class="el_source">ClientChannel.java</span></div><h1>ClientChannel.java</h1><pre class="source lang-java linenums">/*
+ * This file is part of the base framework for the 6COM1038 Software Engineering
+ * Practice coursework assessments -- a command line client application for a
+ * text-based Ticket System.
+ *
+ * &lt;i&gt;Warning:&lt;/i&gt; you are advised &lt;b&gt;not&lt;/b&gt; to modify this file, nor any of
+ * the base framework, i.e., the packages {@link sep.tinee.server},
+ * {@link sep.tinee.server}, {@link sep.tinee.server} and
+ * {@link sep.tinee.server}. Finally, you submit only your client code, which
+ * will be tested against the base framework as provided.
+ *
+ * If you do wish to (temporarily) modify the base framework for debugging or
+ * your own interest, please bear in mind the above point.
+ */
+package sep.tinee.net.channel;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import sep.tinee.net.message.Message;
+
+/**
+ * A client-side channel for interacting with an instance of
+ * {@code sep.tinee.server.Server}.
+ * &lt;p&gt;
+ * Usage protocol:
+ * &lt;ul&gt;
+ * &lt;li&gt;
+ * Create a new instance of
+ * {@linkplain #ClientChannel(String, int) ClientChannel} supplying the host
+ * name and port number of the server.
+ * &lt;li&gt;
+ * Use {@linkplain #send(Message) send} and {@linkplain #receive() receive} to
+ * exchange instances of {@link sep.tinee.net.message.Message} with the
+ * server. These calls may be performed in any &lt;i&gt;sequence&lt;/i&gt; (note:
+ * {@code ClientChannel} is &lt;i&gt;not&lt;/i&gt; thread-safe) that respects the message
+ * protocol (see the documentation for each message), and any number of times
+ * (possibly zero), up to the occurrence of any error (&lt;i&gt;e.g.&lt;/i&gt;,
+ * {@code IOException}).
+ * &lt;li&gt;
+ * Use {@linkplain #close() close} to close the communication session.
+ * &lt;/ul&gt;
+ *
+ * @author rhu1 {@literal &lt;r.z.h.hu@herts.ac.uk&gt;}
+ */
+public class ClientChannel implements AutoCloseable {
+
+  private final String host;
+  private final int port;
+
+  private Socket sock;  // isOpen() &lt;=&gt; this.sock != null
+  private ObjectOutputStream out;
+  private ObjectInputStream in;
+
+  /**
+   * Allocate a new client channel object for communicating with an instance of
+   * {@code sep.tinee.server.Server} listening at the specified host and port.
+   *
+   * @param host The server host, &lt;i&gt;e.g.&lt;/i&gt;, {@code &quot;localhost&quot;}
+   * @param port The server port, &lt;i&gt;e.g.&lt;/i&gt;, {@code 8888}
+   */
+<span class="fc" id="L65">  public ClientChannel(final String host, final int port) {</span>
+<span class="fc" id="L66">    this.host = host;</span>
+<span class="fc" id="L67">    this.port = port;</span>
+<span class="fc" id="L68">    this.sock = null;</span>
+<span class="fc" id="L69">  }</span>
+
+  /**
+   * Returns {@code true} if, and only if, this channel is open, meaning that
+   * it currently encapsulates a TCP socket.
+   *
+   * @return whether this channel is currently open
+   */
+  public boolean isOpen() {
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">    return sock != null;</span>
+  }
+
+  private void open() throws IOException {
+<span class="nc bnc" id="L82" title="All 2 branches missed.">    if (!isOpen()) {</span>
+<span class="nc" id="L83">      this.sock = new Socket(host, port);</span>
+<span class="nc" id="L84">      this.out = new ObjectOutputStream(this.sock.getOutputStream());</span>
+<span class="nc" id="L85">      this.in = new ObjectInputStream(this.sock.getInputStream());</span>
+    }
+<span class="nc" id="L87">  }</span>
+
+  /**
+   * Send a message to the server specified at channel creation.
+   *
+   * @param msg The message to send
+   * @throws IOException If an I/O error occurs
+   */
+  public void send(final Message msg) throws IOException {
+    try {
+<span class="nc bnc" id="L97" title="All 2 branches missed.">      if (isOpen()) {</span>
+<span class="nc" id="L98">        this.out.reset();</span>
+      } else {
+<span class="nc" id="L100">        open();</span>
+      }
+<span class="nc" id="L102">      this.out.writeObject(msg);</span>
+<span class="nc" id="L103">      this.out.flush();</span>
+<span class="nc" id="L104">    } catch (IOException ex) {</span>
+      try {
+<span class="nc" id="L106">        close();</span>
+<span class="nc" id="L107">      } catch (IOException ex1) {</span>
+<span class="nc" id="L108">        Logger.getLogger(ClientChannel.class.getName()).log(Level.WARNING,</span>
+            &quot;Connection close error: &quot;, ex1);
+<span class="nc" id="L110">      }</span>
+<span class="nc" id="L111">      throw ex;</span>
+<span class="nc" id="L112">    }</span>
+<span class="nc" id="L113">  }</span>
+
+  /**
+   * Receive a message from the server specified at channel creation. This
+   * method blocks (&lt;i&gt;i.e.&lt;/i&gt;, does not return) until a message is received,
+   * or an error occurs.
+   *
+   * @return The received message, if successful
+   * @throws IOException            If an I/O error occurs
+   * @throws ClassNotFoundException Class of serialized object cannot be found
+   */
+  public Message receive() throws IOException, ClassNotFoundException {
+    Object obj;
+    try {
+<span class="nc bnc" id="L127" title="All 2 branches missed.">      if (!isOpen()) {</span>
+<span class="nc" id="L128">        open();</span>
+      }
+<span class="nc" id="L130">      obj = this.in.readObject();</span>
+<span class="nc" id="L131">    } catch (IOException ex) {</span>
+      try {
+<span class="nc" id="L133">        close();</span>
+<span class="nc" id="L134">      } catch (IOException ex1) {</span>
+<span class="nc" id="L135">        Logger.getLogger(ClientChannel.class.getName()).log(Level.WARNING,</span>
+            &quot;Connection close error: &quot;, ex1);
+<span class="nc" id="L137">      }</span>
+<span class="nc" id="L138">      throw ex;</span>
+<span class="nc" id="L139">    }</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">    if (!(obj instanceof Message)) {</span>
+<span class="nc" id="L141">      throw new IOException(&quot;[Server error]  Received unexpected object type: &quot;</span>
+<span class="nc" id="L142">          + obj.getClass());</span>
+    }
+<span class="nc" id="L144">    return (Message) obj;</span>
+  }
+
+  /**
+   * Close the encapsulated socket and I/O streams, if any currently open.
+   * &lt;p&gt;
+   * Guaranteed post condition: {@code !isOpen()}. This operation is idempotent
+   * provided the other methods are not called.
+   *
+   * @throws IOException If an I/O error occurs
+   */
+  @Override
+  public void close() throws IOException {
+<span class="nc" id="L157">    IOException err = null;</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">    if (this.in != null) {</span>
+      try {
+<span class="nc" id="L160">        this.in.close();  // Idempotent</span>
+<span class="nc" id="L161">      } catch (IOException ex) {</span>
+<span class="nc" id="L162">        err = ex;  // err currently null</span>
+      } finally {
+<span class="nc" id="L164">        this.in = null;</span>
+<span class="nc" id="L165">      }</span>
+    }
+<span class="nc bnc" id="L167" title="All 2 branches missed.">    if (this.out != null) {</span>
+      try {
+<span class="nc" id="L169">        this.out.close();  // Idempotent</span>
+<span class="nc" id="L170">      } catch (IOException ex) {</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">        if (err == null) {</span>
+<span class="nc" id="L172">          err = ex;</span>
+        }
+      } finally {
+<span class="nc" id="L175">        this.out = null;</span>
+<span class="nc" id="L176">      }</span>
+    }
+<span class="nc bnc" id="L178" title="All 2 branches missed.">    if (this.sock != null) {  // i.e., isOpen</span>
+      try {
+<span class="nc" id="L180">        this.sock.close();  // Idempotent</span>
+<span class="nc" id="L181">      } catch (IOException ex) {</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (err == null) {</span>
+<span class="nc" id="L183">          err = ex;</span>
+        }
+      } finally {
+<span class="nc" id="L186">        this.sock = null;  // isOpen -&gt; false</span>
+<span class="nc" id="L187">      }</span>
+    }
+<span class="nc bnc" id="L189" title="All 2 branches missed.">    if (err != null) {</span>
+<span class="nc" id="L190">      throw err;</span>
+    }
+<span class="nc" id="L192">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

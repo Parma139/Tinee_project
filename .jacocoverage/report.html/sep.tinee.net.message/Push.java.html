@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Push.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;Tinee_project&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">sep.tinee.net.message</a> &gt; <span class="el_source">Push.java</span></div><h1>Push.java</h1><pre class="source lang-java linenums">/*
+ * This file is part of the base framework for the 6COM1038 Software Engineering
+ * Practice coursework assessments -- a command line client application for a
+ * text-based Ticket System.
+ *
+ * &lt;i&gt;Warning:&lt;/i&gt; you are advised &lt;b&gt;not&lt;/b&gt; to modify this file, nor any of
+ * the base framework, i.e., the packages {@link sep.tinee.server},
+ * {@link sep.tinee.server}, {@link sep.tinee.server} and
+ * {@link sep.tinee.server}. Finally, you submit only your client code, which
+ * will be tested against the base framework as provided.
+ *
+ * If you do wish to (temporarily) modify the base framework for debugging or
+ * your own interest, please bear in mind the above point.
+ */
+package sep.tinee.net.message;
+
+import java.io.ByteArrayInputStream;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+/**
+ * A {@code PUSH} message: tells a {@link sep.tinee.server.Server} instance to
+ * append a list of tines from a user to each (possibly new) tag in the set
+ * of tags.
+ * &lt;p&gt;
+ * Instances of this class are immutable.
+ *
+ * @author rhu1 {@literal &lt;r.z.h.hu@herts.ac.uk&gt;}
+ */
+public final class Push implements Message {
+
+  /** 
+   * Pushing a Tine with this exact message line causes the server to close the
+   * ticket, if the user is the ticket's creator (initial author)
+   */
+  public static final String CLOSE_LINE = &quot;##CLOSE##&quot;;
+
+  private static final long serialVersionUID = 1L;  // Generated
+
+  /**
+   * The header code.
+   */
+  public static final String HEADER = &quot;PUSH&quot;;
+
+  /**
+   * The name of the author of these tines.
+   *
+   * @see sep.tinee.net.message.Message#isValidUserId(String)
+   */
+  public final String user;
+
+  /**
+   * The non-empty set of target tags. The set is not modifiable.
+   *
+   * @see sep.tinee.net.message.Message#isValidTag(String)
+   */
+  public final Set&lt;String&gt; tags;
+
+  /**
+   * The non-empty list of tine message lines. The list is not modifiable.
+   *
+   * @see sep.tinee.net.message.Message#isValidLine(String)
+   */
+  public final List&lt;String&gt; lines;
+
+  /**
+   * Create a {@code PUSH} message for a single tag. This is equivalent to
+   * {@linkplain #Push(String, LinkedHashSet, List)} where the set is a
+   * singleton containing {@code tag}.
+   *
+   * @param user  A user name
+   * @param tag The target tag
+   * @param lines A non-empty list of tine message lines to append to each tag
+   *              non-empty
+   * @throws IllegalArgumentException If tags or lines is empty, or any of
+                                  the user name, tags or message lines are
+                                  invalid
+   *
+   * @see sep.tinee.net.message.Message#isValidUserId(String)
+   * @see sep.tinee.net.message.Message#isValidTag(String)
+   * @see sep.tinee.net.message.Message#isValidLine(String)
+   */
+  public Push(final String user, final String tag,
+      final List&lt;String&gt; lines) {
+    //this(user, Stream.of(tag).collect(Collectors.toCollection(LinkedHashSet::new)), lines);
+<span class="nc" id="L91">    this(user, new LinkedHashSet&lt;&gt;(Stream.of(tag).collect(Collectors.toSet())),</span>
+        lines);
+<span class="nc" id="L93">  }</span>
+
+  /**
+   * Create a {@code PUSH} message.
+   *
+   * @param user   A user name
+   * @param tags A non-empty set of target tags
+   * @param lines  A non-empty list of tine message lines to append to each tag
+   *               non-empty
+   * @throws IllegalArgumentException If tags or lines is empty, or any of
+                                  the user name, tags or message lines are
+                                  invalid
+   *
+   * @see sep.tinee.net.message.Message#isValidUserId(String)
+   * @see sep.tinee.net.message.Message#isValidTag(String)
+   * @see sep.tinee.net.message.Message#isValidLine(String)
+   */
+  public Push(final String user, final LinkedHashSet&lt;String&gt; tags,
+<span class="nc" id="L111">      final List&lt;String&gt; lines) {</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">    if (tags.isEmpty()) {</span>
+<span class="nc" id="L113">      throw new IllegalArgumentException(&quot;Tags set should be non-empty.&quot;);</span>
+    }
+<span class="nc bnc" id="L115" title="All 2 branches missed.">    if (lines.isEmpty()) {</span>
+<span class="nc" id="L116">      throw new IllegalArgumentException(&quot;Tines list should be non-empty.&quot;);</span>
+    }
+<span class="nc" id="L118">    Message.isValidUserId(user);</span>
+<span class="nc" id="L119">    tags.forEach(Message::isValidTag);</span>
+<span class="nc" id="L120">    lines.forEach(Message::isValidLine);</span>
+<span class="nc" id="L121">    this.user = user;</span>
+<span class="nc" id="L122">    this.tags = Collections.unmodifiableSet(new LinkedHashSet&lt;&gt;(tags));</span>
+<span class="nc" id="L123">    this.lines = Collections.unmodifiableList(new LinkedList&lt;&gt;(lines));</span>
+<span class="nc" id="L124">  }</span>
+
+  @Override
+  public String getHeader() {
+<span class="nc" id="L128">    return Push.HEADER;</span>
+  }
+
+  @Override
+  public String toString() {
+<span class="nc" id="L133">    return Push.HEADER</span>
+<span class="nc" id="L134">        + this.tags.stream().map(x -&gt; &quot; #&quot; + x)</span>
+<span class="nc" id="L135">            .collect(Collectors.joining())</span>
+<span class="nc" id="L136">        + this.lines.stream().map(x -&gt; &quot; @&quot; + this.user + &quot; &quot; + x)</span>
+<span class="nc" id="L137">            .collect(Collectors.joining());</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

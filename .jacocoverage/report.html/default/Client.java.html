@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Client.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;Tinee_project&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">Client.java</span></div><h1>Client.java</h1><pre class="source lang-java linenums">
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+import sep.tinee.net.message.Bye;
+import sep.tinee.net.message.Push;
+import sep.tinee.net.message.ReadReply;
+import sep.tinee.net.message.ReadRequest;
+
+/**
+ * This class is an initial work-in-progress prototype for a command line
+ * Tinee client. It has been hastily hacked together, as often the case
+ * in early exploratory coding, and is incomplete and buggy. However, it
+ * does compile and run, and &lt;i&gt;some&lt;/i&gt; basic functionality, such as pushing
+ * and reading tines to and from an instance of
+ * {@link sep.tinee.server.Server}, is working. Try it out!
+ * &lt;p&gt;
+ * The arguments required to run a client correspond to the
+ * {@link #set(String, String, int)} method: a user name, and the host name
+ * and port number of a Tinee server.
+ * &lt;p&gt;
+ * You can compile and run this client using &lt;b&gt;NetBeans&lt;/b&gt;; e.g., right-click
+ * this file in the NetBeans editor and select &quot;Run File&quot;.  Note, to provide
+ * the above arguments, you should set up a &lt;b&gt;run configuration&lt;/b&gt; for this
+ * class: {@literal -&gt;} &quot;Set Project Configuration&quot; {@literal -&gt;} &quot;Customize...&quot;
+ * {@literal -&gt;} &quot;New...&quot;.
+ * &lt;p&gt;
+ * Assuming compilation using NetBeans (etc.), you can also run {@code Client}
+ * from the command line; e.g., on Windows, run:
+ * &lt;ul&gt;
+ * &lt;li style=&quot;list-style-type: none;&quot;&gt;
+ * {@code C:\...\tinee&gt;  java -cp build\classes Client userid localhost 8888}
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * You will be significantly reworking and extending this client: your aim is
+ * to meet the specification, and you have mostly free rein to do so.
+ * (That is as opposed to the base framework, which you are &lt;b&gt;not&lt;/b&gt; permitted
+ * to modify, i.e., the packages {@link sep.tinee.server},
+ * {@link sep.tinee.server}, {@link sep.tinee.server} and]
+ * {@link sep.tinee.server}.) The constraints on your client are:
+ * &lt;ul&gt;
+ * &lt;li&gt;
+ * You must retain a class named {@code Client}) as the frontend class for
+ * running your client, i.e., via its static {@linkplain #main(String[]) main}
+ * method.
+ * &lt;li&gt;
+ * The {@linkplain Client#main(String[]) main} method must accept the &lt;i&gt;same
+ * arguments&lt;/i&gt; as currently, i.e., user name, host name and port number.
+ * &lt;li&gt;
+ * Your client must continue to accept user commands on the &lt;i&gt;standard input
+ * stream&lt;/i&gt; ({@code System.in}), and output on the &lt;i&gt;standard output
+ * stream&lt;/i&gt; ({@code System.out}).
+ * &lt;li&gt;
+ * Any other conditions specified by the assignment tasks.
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * &lt;i&gt;Tip:&lt;/i&gt; generate and read the &lt;b&gt;JavaDoc&lt;/b&gt; API documentation for the
+ * provided base framework classes (if you're not already reading this there!).
+ * After importing the code project into NetBeans, right-click the project in
+ * the &quot;Projects&quot; window and select &quot;Generate Javadoc&quot;.
+ * By default, the output is written to the {@code dist/javadoc} directory.
+ * You can directly read the comments in the code for the same information, but
+ * the generated JavaDoc is formatted more nicely as HTML with click-able links.  
+ *
+ * @see CLFormatter
+ */
+public class Client {
+
+  String user;
+  String host;
+  int port;
+
+<span class="nc" id="L78">  boolean printSplash = true;</span>
+  //intial commit
+
+<span class="nc" id="L81">  Client() {</span>
+<span class="nc" id="L82">  }</span>
+
+  public static void main(String[] args) throws IOException {
+<span class="nc" id="L85">    String user = args[0];</span>
+<span class="nc" id="L86">    String host = args[1];</span>
+<span class="nc" id="L87">    int port = Integer.parseInt(args[2]);</span>
+<span class="nc" id="L88">    Client client = new Client();</span>
+<span class="nc" id="L89">    client.set(user, host, port);</span>
+<span class="nc" id="L90">    client.run();</span>
+<span class="nc" id="L91">  }</span>
+
+  public void set(String user, String host, int port) {
+<span class="nc" id="L94">    this.user = user;</span>
+<span class="nc" id="L95">    this.host = host;</span>
+<span class="nc" id="L96">    this.port = port;</span>
+<span class="nc" id="L97">  }</span>
+
+  // Run the client
+  @SuppressFBWarnings(
+      value = &quot;DM_DEFAULT_ENCODING&quot;,
+      justification = &quot;When reading console, ignore 'default encoding' warning&quot;)
+  void run() throws IOException {
+
+<span class="nc" id="L105">    BufferedReader reader = null;</span>
+<span class="nc" id="L106">    CLFormatter helper = null;</span>
+    try {
+<span class="nc" id="L108">      reader = new BufferedReader(new InputStreamReader(System.in));</span>
+
+<span class="nc bnc" id="L110" title="All 4 branches missed.">      if (this.user.isEmpty() || this.host.isEmpty()) {</span>
+<span class="nc" id="L111">        System.err.println(&quot;User/host has not been set.&quot;);</span>
+<span class="nc" id="L112">        System.exit(1);</span>
+      }
+<span class="nc" id="L114">      helper = new CLFormatter(this.host, this.port);</span>
+
+<span class="nc bnc" id="L116" title="All 2 branches missed.">      if (this.printSplash = true);</span>
+      {
+<span class="nc" id="L118">        System.out.print(helper.formatSplash(this.user));</span>
+      }
+<span class="nc" id="L120">      loop(helper, reader);</span>
+<span class="nc" id="L121">    } catch (Exception ex) {</span>
+<span class="nc" id="L122">      throw new RuntimeException(ex);</span>
+    } finally {
+<span class="nc" id="L124">      reader.close();</span>
+<span class="nc bnc" id="L125" title="All 4 branches missed.">      if (helper.chan.isOpen()) {</span>
+        // If the channel is open, send Bye and close
+<span class="nc" id="L127">        helper.chan.send(new Bye());</span>
+<span class="nc" id="L128">        helper.chan.close();</span>
+      }
+<span class="nc" id="L130">    }</span>
+<span class="nc" id="L131">  }</span>
+
+// Main loop: print user options, read user input and process
+  void loop(CLFormatter helper, BufferedReader reader) throws IOException,
+      ClassNotFoundException {
+
+    // The app is in one of two states: &quot;Main&quot; or &quot;Drafting&quot;
+<span class="nc" id="L138">    String state = &quot;Main&quot;;  // Initial state</span>
+
+    // Holds the current draft data when in the &quot;Drafting&quot; state
+<span class="nc" id="L141">    String draftTag = null;</span>
+<span class="nc" id="L142">    List&lt;String&gt; draftLines = new LinkedList&lt;&gt;();</span>
+
+    // The loop
+<span class="nc bnc" id="L145" title="All 2 branches missed.">    for (boolean done = false; !done;) {</span>
+
+      // Print user options
+<span class="nc bnc" id="L148" title="All 2 branches missed.">      if (state.equals(&quot;Main&quot;)) {</span>
+<span class="nc" id="L149">        System.out.print(helper.formatMainMenuPrompt());</span>
+      } else {  // state = &quot;Drafting&quot;
+<span class="nc" id="L151">        System.out.print(helper.</span>
+<span class="nc" id="L152">            formatDraftingMenuPrompt(draftTag, draftLines));</span>
+      }
+
+      // Read a line of user input
+<span class="nc" id="L156">      String raw = reader.readLine();</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">      if (raw == null) {</span>
+<span class="nc" id="L158">        throw new IOException(&quot;Input stream closed while reading.&quot;);</span>
+      }
+      // Trim leading/trailing white space, and split words according to spaces
+<span class="nc" id="L161">      List&lt;String&gt; split = Arrays.stream(raw.trim().split(&quot;\\ &quot;))</span>
+<span class="nc" id="L162">          .map(x -&gt; x.trim()).collect(Collectors.toList());</span>
+<span class="nc" id="L163">      String cmd = split.remove(0);  // First word is the command keyword</span>
+<span class="nc" id="L164">      String[] rawArgs = split.toArray(new String[split.size()]);</span>
+      // Remainder, if any, are arguments
+
+      // Process user input
+<span class="nc bnc" id="L168" title="All 2 branches missed.">      if (&quot;exit&quot;.startsWith(cmd)) {</span>
+        // exit command applies in either state
+<span class="nc" id="L170">        done = true;</span>
+      } // &quot;Main&quot; state commands
+<span class="nc bnc" id="L172" title="All 2 branches missed.">      else if (state.equals(&quot;Main&quot;)) {</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">        if (&quot;manage&quot;.startsWith(cmd)) {</span>
+          // Switch to &quot;Drafting&quot; state and start a new &quot;draft&quot;
+<span class="nc" id="L175">          state = &quot;Drafting&quot;;</span>
+<span class="nc" id="L176">          draftTag = rawArgs[0];</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">        } else if (&quot;read&quot;.startsWith(cmd)) {</span>
+          // Read tines on server
+<span class="nc" id="L179">          helper.chan.send(new ReadRequest(rawArgs[0]));</span>
+<span class="nc" id="L180">          ReadReply rep = (ReadReply) helper.chan.receive();</span>
+<span class="nc" id="L181">          System.out.print(</span>
+<span class="nc" id="L182">              helper.formatRead(rawArgs[0], rep.users, rep.lines));</span>
+<span class="nc" id="L183">        } else {</span>
+<span class="nc" id="L184">          System.out.println(&quot;Could not parse command/args.&quot;);</span>
+        }
+      } // &quot;Drafting&quot; state commands
+<span class="nc bnc" id="L187" title="All 2 branches missed.">      else if (state.equals(&quot;Drafting&quot;)) {</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        if (&quot;line&quot;.startsWith(cmd)) {</span>
+          // Add a tine message line
+<span class="nc" id="L190">          String line = Arrays.stream(rawArgs).</span>
+<span class="nc" id="L191">              collect(Collectors.joining());</span>
+<span class="nc" id="L192">          draftLines.add(line);</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        } else if (&quot;push&quot;.startsWith(cmd)) {</span>
+          // Send drafted tines to the server, and go back to &quot;Main&quot; state
+<span class="nc" id="L195">          helper.chan.send(new Push(user, draftTag, draftLines));</span>
+<span class="nc" id="L196">          state = &quot;Main&quot;;</span>
+<span class="nc" id="L197">          draftTag = null;</span>
+        } else {
+<span class="nc" id="L199">          System.out.println(&quot;Could not parse command/args.&quot;);</span>
+        }
+      } else {
+<span class="nc" id="L202">        System.out.println(&quot;Could not parse command/args.&quot;);</span>
+      }
+<span class="nc" id="L204">    }</span>
+<span class="nc" id="L205">    return;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>
