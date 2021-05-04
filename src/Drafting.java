@@ -21,7 +21,7 @@ public class Drafting {
     
 
     CPClient client; 
-    CLFormatter helper = null;
+//    CLFormatter helper;
      
     /**
      *Constructor hold the instance of CPClient
@@ -47,7 +47,7 @@ public class Drafting {
     */
    void push () throws IOException{
       
-        helper.chan.send(new Push(client.user, client.draftTag, client.draftLines));
+        CLFormatter.chan.send(new Push(client.user, client.draftTag, client.draftLines));
            changestate();
           
    }
@@ -63,6 +63,10 @@ public class Drafting {
             client.draftLines.removeLast();
 
               }  
+            else {
+                System.err.println("Nothing left for undo\n ");
+            
+            }
    
    }
    
@@ -73,9 +77,9 @@ public class Drafting {
     */
     void close () throws IOException{
        
-        helper.chan.send(new Push(client.user, client.draftTag, client.draftLines));
+        CLFormatter.chan.send(new Push(client.user, client.draftTag, client.draftLines));
            
-            client.ticketStateTag.add(client.draftTag);
+        client.ticketStateTag.add(client.draftTag);
             changestate();
    
    }
@@ -86,6 +90,10 @@ public class Drafting {
  */
     void discard() {
         
+          Iterator<String> addedLine = client.draftLines.iterator();
+            if(addedLine.hasNext()){
+            client.draftLines.clear();
+            }
          changestate();
     }
  /**

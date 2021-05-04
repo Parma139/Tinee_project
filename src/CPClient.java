@@ -96,7 +96,7 @@ public class CPClient {
     }
 
     catch (IOException | ClassNotFoundException ex) {
-      throw new RuntimeException(ex);
+        System.out.println(ex + "Invalid input try again");
     }
 
     finally {
@@ -116,13 +116,14 @@ public class CPClient {
 
     // The app is in one of two states: "Main" or "Drafting"
    
-
+    String mainCheck = "Main"; // it hold the value and it use check the stage is on main or not
+    String draftingCheck = "Drafting";
     // The loop
    for (boolean done = false; !done;)
     {
-
+       
       // Print user options
-      if (state.equals("Main")) {
+      if (state.equals(mainCheck)) {
         System.out.print(helper.formatMainMenuPrompt());
       } else {  // state = "Drafting"
         System.out.print(helper.
@@ -157,7 +158,7 @@ public class CPClient {
         done = true;
    
       } // "Main" state commands
-      else if (state.equals("Main")) {
+      else if (state.equals(mainCheck)) {
           
           draftTag = rawArgs[0];
           boolean ticket = ticketStateTag.contains(draftTag);
@@ -181,7 +182,7 @@ public class CPClient {
         }
 
       } // "Drafting" state commands
-      else if (state.equals("Drafting")) {
+      else if (state.equals(draftingCheck)) {
          
         Drafting drafting = new Drafting(this);
         if ("line".startsWith(cmd)) {
@@ -227,6 +228,5 @@ public class CPClient {
         System.out.println("Could not parse command/args.");
       }
     }
-    return;
   }
 }

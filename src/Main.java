@@ -30,11 +30,11 @@ public class Main {
      */
     void readsetup(String arg) throws IOException, ClassNotFoundException{
 
-          CLFormatter helper = null;
-          helper.chan.send(new ReadRequest(arg));
-          ReadReply rep = (ReadReply) helper.chan.receive();
+         
+          CLFormatter.chan.send(new ReadRequest(arg));
+          ReadReply rep = (ReadReply) CLFormatter.chan.receive();
           System.out.print(
-          helper.formatRead(arg, rep.users, rep.lines));
+          CLFormatter.formatRead(arg, rep.users, rep.lines));
     }  
        
        

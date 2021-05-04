@@ -36,8 +36,8 @@ public class ReadSetup implements Command{
     public void execute() {
         try {
             main.readsetup(argstmp);
-        } catch (Exception ex) {
-            System.out.println("Invalid input try again");
+        } catch (IOException | ClassNotFoundException ex) {
+            System.out.println(ex + "Invalid input try again");
         } 
 
     }
