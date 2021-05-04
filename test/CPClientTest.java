@@ -28,7 +28,7 @@ public class CPClientTest {
        String input = "read parma";
       ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes("UTF8"));
       System.setIn(in); // Sets System.in to the supplied stream
-      Client.main(args);
+//      Client.main(args);
     }
 
     /**

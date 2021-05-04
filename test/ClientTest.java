@@ -1,10 +1,10 @@
-<<<<<<< HEAD
+
 ///*
 // * To change this license header, choose License Headers in Project Properties.
 // * To change this template file, choose Tools | Templates
 // * and open the template in the editor.
 // */
-=======
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -35,7 +35,7 @@ public class ClientTest {
         String input = "read parma";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes("UTF8"));
         System.setIn(in); // Sets System.in to the supplied stream
-        Client.main(args);
+//        Client.main(args);
         
     }
 
@@ -52,7 +52,7 @@ public class ClientTest {
 //        instance.set(user, host, port);
 //        fail("The test case is a prototype.");
 //    }
->>>>>>> testing
+
 //
 //import java.io.BufferedReader;
 //import java.io.ByteArrayInputStream;
@@ -121,3 +121,4 @@ public class ClientTest {
 ////    }
 ////    
 //}
+}
