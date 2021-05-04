@@ -15,12 +15,7 @@ import sep.tinee.net.message.ReadRequest;
  */
 public class Main {
     
-//    CPClient client;
-//    
-//    public Main(CPClient client){
-//        this.client = client;
-//    }
-   
+
     /**
      * 
      * @param arg arg hold drafttag or tag name to look in the sever that this tag have any saved message or not
@@ -37,24 +32,7 @@ public class Main {
           CLFormatter.formatRead(arg, rep.users, rep.lines));
     }  
        
-       
-//    void manageSetup(){
-//       
-//    
-//         if (client.ticket == false ) {
-//          // Switch to "Drafting" state and start a new "draft
-//          
-//          client.state = "Drafting";
-//          client.draftTag = rawArgs[0];
-//        }
-//        else{
-//             
-//            System.out.println("\n >>>>>>>>>>> Ticket has been closed >>>>>>>>>>>");
-//        }
-//       
-//      
-//       
-//       }
+
        
     }
 

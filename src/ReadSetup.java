@@ -19,7 +19,7 @@ public class ReadSetup implements Command{
     String argstmp;
 
     /**
-     *Constructor pass the specific drafting that this command is going to control
+     *Constructor pass the specific main that this command is going to control
      * @param main main is the drafting object that is going to be the receiver of the object when execute will called
      * @param tagname it hold drafttag or tagname which use to check this tag include any message on the server
      */
@@ -30,7 +30,7 @@ public class ReadSetup implements Command{
     }
 
     /**
-     * this method will calls the discard() method on the receiving object, which is the drafting that are controlling
+     * this method will calls the main() method on the receiving object, which is the Main that are controlling
      */
     @Override
     public void execute() {
