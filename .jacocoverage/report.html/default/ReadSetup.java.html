@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ReadSetup.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;Tinee_project&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">ReadSetup.java</span></div><h1>ReadSetup.java</h1><pre class="source lang-java linenums">
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author 16084787
+ */
+public class ReadSetup implements Command{
+    
+    Main main;
+    String argstmp;
+
+    /**
+     *Constructor pass the specific main that this command is going to control
+     * @param main main is the drafting object that is going to be the receiver of the object when execute will called
+     * @param tagname it hold drafttag or tagname which use to check this tag include any message on the server
+     */
+<span class="nc" id="L26">    public ReadSetup (Main main, String tagname){</span>
+        
+<span class="nc" id="L28">        this.main = main;</span>
+<span class="nc" id="L29">        this.argstmp = tagname;</span>
+<span class="nc" id="L30">    }</span>
+
+    /**
+     * this method will calls the main() method on the receiving object, which is the Main that are controlling
+     */
+    @Override
+    public void execute() {
+        try {
+<span class="nc" id="L38">            main.readsetup(argstmp);</span>
+<span class="nc" id="L39">        } catch (IOException | ClassNotFoundException ex) {</span>
+<span class="nc" id="L40">            System.out.println(ex + &quot;Invalid input try again&quot;);</span>
+<span class="nc" id="L41">        } </span>
+
+<span class="nc" id="L43">    }</span>
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

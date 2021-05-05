@@ -56,8 +56,8 @@ public final class ReadRequest implements Message {
    * @see sep.tinee.net.message.Message#isValidTag(String)
    */
   public ReadRequest(final String tag) {
-<span class="nc" id="L59">    this(tag, 0);</span>
-<span class="nc" id="L60">  }</span>
+<span class="fc" id="L59">    this(tag, 0);</span>
+<span class="fc" id="L60">  }</span>
 
   /**
    * Create a {@code READ} message. Note: it does not matter whether or not the
@@ -70,14 +70,14 @@ public final class ReadRequest implements Message {
    *
    * @see sep.tinee.net.message.Message#isValidTag(String)
    */
-<span class="nc" id="L73">  public ReadRequest(final String tag, final int index) {</span>
-<span class="nc" id="L74">    Message.isValidTag(tag);</span>
-<span class="nc bnc" id="L75" title="All 2 branches missed.">    if (index &lt; 0) {</span>
+<span class="fc" id="L73">  public ReadRequest(final String tag, final int index) {</span>
+<span class="fc" id="L74">    Message.isValidTag(tag);</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">    if (index &lt; 0) {</span>
 <span class="nc" id="L76">      throw new IllegalArgumentException(&quot;Invalid index value: &quot; + index);</span>
     }
-<span class="nc" id="L78">    this.tag = tag;</span>
-<span class="nc" id="L79">    this.index = index;</span>
-<span class="nc" id="L80">  }</span>
+<span class="fc" id="L78">    this.tag = tag;</span>
+<span class="fc" id="L79">    this.index = index;</span>
+<span class="fc" id="L80">  }</span>
 
   @Override
   public String getHeader() {

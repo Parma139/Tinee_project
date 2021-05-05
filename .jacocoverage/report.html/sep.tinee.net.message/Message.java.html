@@ -41,15 +41,15 @@ public interface Message extends Serializable {
    * @param name The name to validate
    */
   static void isValidUserId(String name) {
-<span class="nc bnc" id="L44" title="All 4 branches missed.">    if (name.isEmpty() || name.length() &gt; 8) {</span>
+<span class="pc bpc" id="L44" title="2 of 4 branches missed.">    if (name.isEmpty() || name.length() &gt; 8) {</span>
 <span class="nc" id="L45">      throw new IllegalArgumentException(</span>
           &quot;User name should be non-empty and not longer than 8 characters.&quot;);
     }
-<span class="nc bnc" id="L48" title="All 2 branches missed.">    if (!name.matches(&quot;^[a-zA-Z0-9]*$&quot;)) {</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">    if (!name.matches(&quot;^[a-zA-Z0-9]*$&quot;)) {</span>
 <span class="nc" id="L49">      throw new IllegalArgumentException(</span>
           &quot;User name should be alphanumeric, not: &quot; + name);
     }
-<span class="nc" id="L52">  }</span>
+<span class="fc" id="L52">  }</span>
 
   /**
    * Validate a ticket tag name.
@@ -57,16 +57,16 @@ public interface Message extends Serializable {
    * @param name The name to validate
    */
   static void isValidTag(String name) {
-<span class="nc bnc" id="L60" title="All 4 branches missed.">    if (name.isEmpty() || name.length() &gt; 8) {</span>
+<span class="pc bpc" id="L60" title="2 of 4 branches missed.">    if (name.isEmpty() || name.length() &gt; 8) {</span>
 <span class="nc" id="L61">      throw new IllegalArgumentException(</span>
           &quot;Tag name should be non-empty and not longer than 8 characters.&quot;);
     }
-<span class="nc bnc" id="L64" title="All 2 branches missed.">    if (!name.matches(</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">    if (!name.matches(</span>
         &quot;^[a-zA-Z0-9]*$&quot;)) {
 <span class="nc" id="L66">      throw new IllegalArgumentException(</span>
           &quot;Toag should be alphanumeric, not: &quot; + name);
     }
-<span class="nc" id="L69">  }</span>
+<span class="fc" id="L69">  }</span>
 
   /**
    * Validate a tine msg line.
@@ -74,15 +74,15 @@ public interface Message extends Serializable {
    * @param msg The line to validate
    */
   static void isValidLine(String msg) {
-<span class="nc bnc" id="L77" title="All 4 branches missed.">    if (msg.isEmpty() || msg.length() &gt; 48) {</span>
+<span class="pc bpc" id="L77" title="2 of 4 branches missed.">    if (msg.isEmpty() || msg.length() &gt; 48) {</span>
 <span class="nc" id="L78">      throw new IllegalArgumentException(</span>
           &quot;Tine message line should be non-empty and not longer than 48&quot;
           + &quot;characters.&quot;);
     }
-<span class="nc bnc" id="L82" title="All 2 branches missed.">    if (msg.contains(System.getProperty(&quot;line.separator&quot;))) {</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">    if (msg.contains(System.getProperty(&quot;line.separator&quot;))) {</span>
 <span class="nc" id="L83">      throw new IllegalArgumentException(</span>
           &quot;Tine message line should be a single line, not: &quot; + msg);
     }
-<span class="nc" id="L86">  }</span>
+<span class="fc" id="L86">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

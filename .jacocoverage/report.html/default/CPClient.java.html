@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>CPClient.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;Tinee_project&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">CPClient.java</span></div><h1>CPClient.java</h1><pre class="source lang-java linenums">
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+import sep.tinee.net.message.Bye;
+import sep.tinee.net.message.Push;
+import sep.tinee.net.message.ReadReply;
+import sep.tinee.net.message.ReadRequest;
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author 16084787
+ */
+public class CPClient {
+
+
+    String user; 
+    String host;
+    int port;
+<span class="nc" id="L33">    CommandController controller = new CommandController(); // invoker which passes a command object that can be used to make requests.</span>
+<span class="nc" id="L34">    public LinkedList&lt;String&gt; draftLines = new LinkedList&lt;&gt;();  // Holds the current draft data when in the &quot;Drafting&quot; state</span>
+<span class="nc" id="L35">    public LinkedList&lt;String&gt; ticketStateTag = new LinkedList&lt;&gt;(); //save tag name for close tinee</span>
+<span class="nc" id="L36">    public String state = &quot;Main&quot;;  // Initial state</span>
+<span class="nc" id="L37">    public String draftTag = null;                              //String draftTag = null; declared in outside of the method</span>
+    
+<span class="nc" id="L39">    public CPClient (){</span>
+<span class="nc" id="L40">      this.user = &quot;16084787&quot;;</span>
+<span class="nc" id="L41">      this.host = &quot;localhost&quot;;</span>
+<span class="nc" id="L42">      this.port = 8888;</span>
+
+<span class="nc" id="L44">    }</span>
+
+    /**
+     *This is the main method which run the code
+     * @param args Args passes information to the application and each string(information) is called a command line argument
+     * @throws IOException IOException are thrown when there is any input/output file operational issue
+     * while reading or writing the input or files
+     */
+    public static void main (String[] args) throws IOException{
+
+<span class="nc" id="L54">      CPClient client = new CPClient();</span>
+<span class="nc" id="L55">      client.run();</span>
+
+<span class="nc" id="L57">    }</span>
+
+
+
+
+    // Run the client
+  @SuppressFBWarnings(
+      value = &quot;DM_DEFAULT_ENCODING&quot;,
+      justification = &quot;When reading console, ignore 'default encoding' warning&quot;)
+  void run() throws IOException {
+
+<span class="nc" id="L68">    BufferedReader reader = null;</span>
+<span class="nc" id="L69">    CLFormatter helper = null;</span>
+
+
+    try {
+<span class="nc" id="L73">      reader = new BufferedReader(new InputStreamReader(System.in));</span>
+
+<span class="nc bnc" id="L75" title="All 4 branches missed.">      if (user == null || host == null) {</span>
+
+<span class="nc" id="L77">         System.err.println(&quot;User/host has not been set. \n\nPlease enter User/host name: &quot;);</span>
+<span class="nc" id="L78">         String userDetails = reader.readLine();</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">         if (user == null){</span>
+<span class="nc" id="L80">         this.user = userDetails;</span>
+         }
+         else {
+<span class="nc" id="L83">         this.host = userDetails;</span>
+         }
+
+<span class="nc" id="L86">      run();</span>
+
+<span class="nc" id="L88">      }</span>
+
+      else{
+<span class="nc" id="L91">        helper = new CLFormatter(this.host, this.port);</span>
+<span class="nc" id="L92">        System.out.print(helper.formatSplash(this.user));</span>
+<span class="nc" id="L93">        loop(helper, reader);</span>
+      }
+
+    }
+
+<span class="nc" id="L98">    catch (IOException | ClassNotFoundException ex) {</span>
+<span class="nc" id="L99">        System.out.println(ex + &quot;Invalid input try again&quot;);</span>
+    }
+
+    finally {
+<span class="nc" id="L103">      reader.close();</span>
+<span class="nc bnc" id="L104" title="All 6 branches missed.">      if (helper.chan.isOpen()) {</span>
+        // If the channel is open, send Bye and close
+<span class="nc" id="L106">        helper.chan.send(new Bye());</span>
+<span class="nc" id="L107">        helper.chan.close();</span>
+      }
+<span class="nc" id="L109">    }</span>
+<span class="nc" id="L110">  }</span>
+
+
+  // Main loop: print user options, read user input and process
+  void loop(CLFormatter helper, BufferedReader reader) throws IOException,
+      ClassNotFoundException {
+
+    // The app is in one of two states: &quot;Main&quot; or &quot;Drafting&quot;
+   
+<span class="nc" id="L119">    String mainCheck = &quot;Main&quot;; // it hold the value and it use check the stage is on main or not</span>
+<span class="nc" id="L120">    String draftingCheck = &quot;Drafting&quot;;</span>
+    // The loop
+<span class="nc bnc" id="L122" title="All 2 branches missed.">   for (boolean done = false; !done;)</span>
+    {
+       
+      // Print user options
+<span class="nc bnc" id="L126" title="All 2 branches missed.">      if (state.equals(mainCheck)) {</span>
+<span class="nc" id="L127">        System.out.print(helper.formatMainMenuPrompt());</span>
+      } else {  // state = &quot;Drafting&quot;
+<span class="nc" id="L129">        System.out.print(helper.</span>
+<span class="nc" id="L130">            formatDraftingMenuPrompt(draftTag, draftLines));</span>
+        }
+
+      // Read a line of user input
+<span class="nc" id="L134">      String raw = reader.readLine();</span>
+
+
+<span class="nc bnc" id="L137" title="All 2 branches missed.">      if (raw == null) {</span>
+<span class="nc" id="L138">        throw new IOException(&quot;Input stream closed while reading.&quot;);</span>
+      }
+      // Trim leading/trailing white space, and split words according to spaces
+<span class="nc" id="L141">      List&lt;String&gt; split = Arrays.stream(raw.trim().split(&quot;\\ &quot;))</span>
+<span class="nc" id="L142">          .map(x -&gt; x.trim()).collect(Collectors.toList());</span>
+<span class="nc" id="L143">      String cmd = split.remove(0);  // First word is the command keyword</span>
+
+<span class="nc" id="L145">      String[] rawArgs = split.toArray(new String[split.size()]);</span>
+      // Remainder, if any, are arguments
+
+
+
+<span class="nc bnc" id="L150" title="All 2 branches missed.">      if (cmd.isEmpty()){</span>
+<span class="nc" id="L151">      System.err.println(&quot;Type the input&quot;);</span>
+<span class="nc" id="L152">      continue;</span>
+
+      }
+      // Process user input
+<span class="nc bnc" id="L156" title="All 2 branches missed.">      if (&quot;exit&quot;.startsWith(cmd)) {</span>
+        // exit command applies in either state
+<span class="nc" id="L158">        done = true;</span>
+   
+      } // &quot;Main&quot; state commands
+<span class="nc bnc" id="L161" title="All 2 branches missed.">      else if (state.equals(mainCheck)) {</span>
+          
+<span class="nc" id="L163">          draftTag = rawArgs[0];</span>
+<span class="nc" id="L164">          boolean ticket = ticketStateTag.contains(draftTag);</span>
+          
+<span class="nc bnc" id="L166" title="All 4 branches missed.">        if (&quot;manage&quot;.startsWith(cmd) &amp;&amp; ticket == false ) {</span>
+          // Switch to &quot;Drafting&quot; state and start a new &quot;draft
+          
+<span class="nc" id="L169">          state = &quot;Drafting&quot;;</span>
+<span class="nc" id="L170">          draftTag = rawArgs[0];</span>
+        }
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        else if (ticket) {</span>
+<span class="nc" id="L173">            System.out.println(&quot;\n &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Ticket has been closed &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&quot;);</span>
+        }
+
+<span class="nc bnc" id="L176" title="All 2 branches missed.">        else if (&quot;read&quot;.startsWith(cmd)){</span>
+          // Read tines on server
+<span class="nc" id="L178">            Main main = new Main();</span>
+<span class="nc" id="L179">            ReadSetup menusetup = new ReadSetup(main, rawArgs[0]);</span>
+<span class="nc" id="L180">            controller.setCommand(menusetup);</span>
+<span class="nc" id="L181">            controller.userInput();</span>
+        }
+
+<span class="nc" id="L184">      } // &quot;Drafting&quot; state commands</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">      else if (state.equals(draftingCheck)) {</span>
+         
+<span class="nc" id="L187">        Drafting drafting = new Drafting(this);</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        if (&quot;line&quot;.startsWith(cmd)) {</span>
+          // Add a tine message line
+<span class="nc" id="L190">            LineSetup linesetup = new LineSetup(drafting, rawArgs);</span>
+<span class="nc" id="L191">            controller.setCommand(linesetup);</span>
+<span class="nc" id="L192">            controller.userInput();</span>
+<span class="nc" id="L193">        }     </span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        else if (&quot;push&quot;.startsWith(cmd)) {</span>
+           
+<span class="nc" id="L196">           PushSetup pushSetup = new PushSetup(drafting);</span>
+<span class="nc" id="L197">           controller.setCommand(pushSetup);</span>
+<span class="nc" id="L198">           controller.userInput();</span>
+<span class="nc" id="L199">        } </span>
+        
+<span class="nc bnc" id="L201" title="All 2 branches missed.">        else if (&quot;undo&quot;.startsWith(cmd)) {</span>
+
+<span class="nc" id="L203">           UndoSetup undosetup = new UndoSetup(drafting);</span>
+<span class="nc" id="L204">           controller.setCommand(undosetup);</span>
+<span class="nc" id="L205">           controller.userInput();</span>
+<span class="nc" id="L206">        } </span>
+            
+<span class="nc bnc" id="L208" title="All 2 branches missed.">        else if (&quot;close&quot;.startsWith(cmd)) {</span>
+
+<span class="nc" id="L210">           CloseSetup closeSetup = new CloseSetup(drafting);</span>
+<span class="nc" id="L211">           controller.setCommand(closeSetup);</span>
+<span class="nc" id="L212">           controller.userInput();</span>
+        
+<span class="nc" id="L214">        }  </span>
+        
+<span class="nc bnc" id="L216" title="All 2 branches missed.">         else if (&quot;discard&quot;.startsWith(cmd)) {</span>
+
+<span class="nc" id="L218">           DiscardSetup discardSetup = new DiscardSetup(drafting);</span>
+<span class="nc" id="L219">           controller.setCommand(discardSetup);</span>
+<span class="nc" id="L220">           controller.userInput();</span>
+        
+<span class="nc" id="L222">        } </span>
+              
+        else {
+<span class="nc" id="L225">          System.out.println(&quot;Could not parse command/args.&quot;);</span>
+        }
+<span class="nc" id="L227">      } else {</span>
+<span class="nc" id="L228">        System.out.println(&quot;Could not parse command/args.&quot;);</span>
+      }
+<span class="nc" id="L230">    }</span>
+<span class="nc" id="L231">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span></div></body></html>

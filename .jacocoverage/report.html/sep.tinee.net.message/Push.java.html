@@ -88,9 +88,9 @@ public final class Push implements Message {
   public Push(final String user, final String tag,
       final List&lt;String&gt; lines) {
     //this(user, Stream.of(tag).collect(Collectors.toCollection(LinkedHashSet::new)), lines);
-<span class="nc" id="L91">    this(user, new LinkedHashSet&lt;&gt;(Stream.of(tag).collect(Collectors.toSet())),</span>
+<span class="fc" id="L91">    this(user, new LinkedHashSet&lt;&gt;(Stream.of(tag).collect(Collectors.toSet())),</span>
         lines);
-<span class="nc" id="L93">  }</span>
+<span class="fc" id="L93">  }</span>
 
   /**
    * Create a {@code PUSH} message.
@@ -108,20 +108,20 @@ public final class Push implements Message {
    * @see sep.tinee.net.message.Message#isValidLine(String)
    */
   public Push(final String user, final LinkedHashSet&lt;String&gt; tags,
-<span class="nc" id="L111">      final List&lt;String&gt; lines) {</span>
-<span class="nc bnc" id="L112" title="All 2 branches missed.">    if (tags.isEmpty()) {</span>
+<span class="fc" id="L111">      final List&lt;String&gt; lines) {</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">    if (tags.isEmpty()) {</span>
 <span class="nc" id="L113">      throw new IllegalArgumentException(&quot;Tags set should be non-empty.&quot;);</span>
     }
-<span class="nc bnc" id="L115" title="All 2 branches missed.">    if (lines.isEmpty()) {</span>
-<span class="nc" id="L116">      throw new IllegalArgumentException(&quot;Tines list should be non-empty.&quot;);</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">    if (lines.isEmpty()) {</span>
+<span class="fc" id="L116">      throw new IllegalArgumentException(&quot;Tines list should be non-empty.&quot;);</span>
     }
-<span class="nc" id="L118">    Message.isValidUserId(user);</span>
-<span class="nc" id="L119">    tags.forEach(Message::isValidTag);</span>
-<span class="nc" id="L120">    lines.forEach(Message::isValidLine);</span>
-<span class="nc" id="L121">    this.user = user;</span>
-<span class="nc" id="L122">    this.tags = Collections.unmodifiableSet(new LinkedHashSet&lt;&gt;(tags));</span>
-<span class="nc" id="L123">    this.lines = Collections.unmodifiableList(new LinkedList&lt;&gt;(lines));</span>
-<span class="nc" id="L124">  }</span>
+<span class="fc" id="L118">    Message.isValidUserId(user);</span>
+<span class="fc" id="L119">    tags.forEach(Message::isValidTag);</span>
+<span class="fc" id="L120">    lines.forEach(Message::isValidLine);</span>
+<span class="fc" id="L121">    this.user = user;</span>
+<span class="fc" id="L122">    this.tags = Collections.unmodifiableSet(new LinkedHashSet&lt;&gt;(tags));</span>
+<span class="fc" id="L123">    this.lines = Collections.unmodifiableList(new LinkedList&lt;&gt;(lines));</span>
+<span class="fc" id="L124">  }</span>
 
   @Override
   public String getHeader() {
